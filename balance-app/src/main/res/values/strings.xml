@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">Balance</string>
-
-    <!-- Balances (Main) Activity -->
-    <string name="action_new_balance">New Balance</string>
-
-    <string name="no_balances">You haven\'t created any balances yet.</string>
-</resources>
