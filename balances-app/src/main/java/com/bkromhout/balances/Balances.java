@@ -13,7 +13,7 @@ public class Balances extends Application {
     /**
      * Realm file name.
      */
-    private static final String REALM_FILE_NAME = "balance.realm";
+    private static final String REALM_FILE_NAME = "balances.realm";
     /**
      * Realm schema version.
      */
