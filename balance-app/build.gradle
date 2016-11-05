@@ -17,7 +17,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ eventBusIndex : "com.bkromhout.balance.EventBusIndex" ]
+                arguments = [ 'eventBusIndex' : "com.bkromhout.balance.EventBusIndex" ]
             }
         }
     }
@@ -79,6 +79,7 @@ dependencies {
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.afollestad.material-dialogs:core:0.9.1.0'
     compile 'com.wdullaer:materialdatetimepicker:2.5.0'
     compile ('com.bkromhout:realm-recyclerview-lite:3.0.0@aar') {
@@ -93,3 +94,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+//android.applicationVariants.all { variant ->
+//    variant.variantData.variantConfiguration.javaCompileOptions.annotationProcessorOptions
+//        .arguments = ['eventBusIndex' : "com.bkromhout.balance.EventBusIndex"]
+//
+//}

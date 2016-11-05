@@ -1,0 +1,13 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- FAB -->
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- RecyclerView Padding -->
+    <dimen name="recycler_view_padding">8dp</dimen>
+    <!-- Padding for end of recycler views to avoid FAB overlap -->
+    <dimen name="rv_end_padding">80dp</dimen>
+</resources>
