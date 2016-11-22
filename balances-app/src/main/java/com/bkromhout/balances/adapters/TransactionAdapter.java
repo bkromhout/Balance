@@ -9,25 +9,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.bkromhout.balances.R;
 import com.bkromhout.balances.Utils;
-import com.bkromhout.balances.data.models.Balance;
+import com.bkromhout.balances.data.DateUtils;
+import com.bkromhout.balances.data.models.Transaction;
 import com.bkromhout.rrvl.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 
 /**
- * Adapter class which handles binding {@link Balance}s to a RealmRecyclerView.
+ * Adapter class which handles binding {@link Transaction}s to a RealmRecyclerView.
  */
-public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerView.ViewHolder> {
+public class TransactionAdapter extends RealmRecyclerViewAdapter<Transaction, RecyclerView.ViewHolder> {
     /**
      * Whether or not the adapter should consider itself to be in selection mode.
      */
     private boolean inSelectionMode = false;
 
     /**
-     * Create a new {@link BalanceAdapter}.
+     * Create a new {@link TransactionAdapter}.
      * @param context      Context.
      * @param realmResults Results of a Realm query to display.
      */
-    public BalanceAdapter(Context context, RealmResults<Balance> realmResults) {
+    public TransactionAdapter(Context context, RealmResults<Transaction> realmResults) {
         super(context, realmResults);
         setHasStableIds(true);
     }
@@ -43,20 +44,20 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
 
     @Override
     public long getItemId(int position) {
-        final Balance balance = realmResults.get(position);
-        return balance.isValid() ? balance.uniqueId : -1;
+        final Transaction transaction = realmResults.get(position);
+        return transaction.isValid() ? transaction.uniqueId : -1;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BalanceVH(inflater.inflate(R.layout.balance_item, parent));
+        return new TransactionVH(inflater.inflate(R.layout.transaction_item, parent));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        BalanceVH vh = (BalanceVH) holder;
-        final Balance balance = realmResults.get(position);
-        if (!balance.isValid()) return;
+        TransactionVH vh = (TransactionVH) holder;
+        final Transaction transaction = realmResults.get(position);
+        if (!transaction.isValid()) return;
 
         // Visually distinguish selected cards during multi-select mode.
         vh.content.setActivated(isSelected(position));
@@ -68,7 +69,7 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
                 return;
             }
 
-            // TODO Send event to open the balance transactions list activity.
+            // TODO Send event to open the transaction detail activity.
         });
 
         // Set long click handler.
@@ -78,20 +79,25 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
         });
 
         // Set data.
-        vh.tvBalanceName.setText(balance.name);
-        Utils.setAmountTextAndColorWithLimits(vh.tvBalanceAmount, balance.getTotalBalance(), balance.yellowLimit,
-                balance.redLimit);
+        vh.tvTransName.setText(transaction.name);
+        Utils.setAmountTextAndColor(vh.tvTransAmount, transaction.amount, true);
+        vh.tvTransCat.setText(transaction.category.name);
+        vh.tvTransTimestamp.setText(DateUtils.parseDateToString(transaction.timestamp));
     }
 
-    static class BalanceVH extends RecyclerView.ViewHolder {
+    static class TransactionVH extends RecyclerView.ViewHolder {
         @BindView(R.id.content)
         ViewGroup content;
-        @BindView(R.id.balance_name)
-        TextView tvBalanceName;
-        @BindView(R.id.balance_amount)
-        TextView tvBalanceAmount;
+        @BindView(R.id.trans_name)
+        TextView tvTransName;
+        @BindView(R.id.trans_amount)
+        TextView tvTransAmount;
+        @BindView(R.id.trans_cat)
+        TextView tvTransCat;
+        @BindView(R.id.trans_timestamp)
+        TextView tvTransTimestamp;
 
-        BalanceVH(View itemView) {
+        TransactionVH(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

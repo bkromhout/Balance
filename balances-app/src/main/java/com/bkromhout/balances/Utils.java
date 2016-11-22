@@ -44,12 +44,29 @@ public class Utils {
      * com.bkromhout.balances.data.CurrencyUtils}, and then assign it to the given TextView and change the text color to
      * green or red depending on if the amount is positive or negative.
      * @param textView The TextView to set the resulting text and color to.
-     * @param amount The amount value to use.
+     * @param amount   The amount value to use.
      */
     public static void setAmountTextAndColor(final TextView textView, final long amount, final boolean includeSymbol) {
         String amountStr = CurrencyUtils.longToCurrencyString(amount, includeSymbol);
         textView.setText(amountStr);
         textView.setTextColor(amount < 0L ? Balances.getD().TEXT_COLOR_RED : Balances.getD().TEXT_COLOR_GREEN);
+    }
+
+    /**
+     * Similar to {@link #setAmountTextAndColor(TextView, long, boolean)}, sets color based on yellow and red limits
+     * instead of just the sign of the number. Also always includes the currency symbol.
+     * @param textView    The TextView to set the resulting text and color to.
+     * @param amount      The amount value to use.
+     * @param yellowLimit The yellow limit value to compare against.
+     * @param redLimit    The red limit value to compare against.
+     */
+    public static void setAmountTextAndColorWithLimits(final TextView textView, final long amount,
+                                                       final long yellowLimit, final long redLimit) {
+        String amountStr = CurrencyUtils.longToCurrencyString(amount, true);
+        textView.setText(amountStr);
+        textView.setTextColor(amount > yellowLimit ? Balances.getD().TEXT_COLOR_GREEN
+                : (amount > redLimit ? Balances.getD().TEXT_COLOR_YELLOW
+                : Balances.getD().TEXT_COLOR_RED));
     }
 
     /**
