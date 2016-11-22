@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Balances</string>
 
+    <!-- Misc Actions -->
+    <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
+
     <!-- Balances (Main) Activity -->
     <string name="action_new_balance">New Balance</string>
 

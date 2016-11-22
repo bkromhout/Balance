@@ -19,12 +19,22 @@ public class Balances extends Application {
      */
     private static final long REALM_SCHEMA_VERSION = 0;
 
+    /**
+     * Static instance of application context.
+     */
+    private static Balances INSTANCE;
+    /**
+     * Static instance of {@link D}.
+     */
+    private static D D;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        INSTANCE = this;
+        D = new D(this);
 
         Realm.init(this);
-
         // TODO Get the index working.
         EventBus.builder()/*.addIndex(new EventBusIndex())*/.installDefaultEventBus();
 
@@ -36,5 +46,19 @@ public class Balances extends Application {
         try (Realm realm = Realm.getDefaultInstance()) {
             UniqueIdFactory.getInstance().initializeDefault(realm);
         }
+    }
+
+    /**
+     * Get static Application instance.
+     */
+    public static Balances get() {
+        return INSTANCE;
+    }
+
+    /**
+     * Get static {@link D} instance.
+     */
+    public static D getD() {
+        return D;
     }
 }

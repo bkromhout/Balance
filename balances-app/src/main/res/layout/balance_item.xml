@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/content"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/balance_item_height"
+              android:paddingRight="@dimen/balance_item_h_padding"
+              android:paddingLeft="@dimen/balance_item_h_padding"
+              android:layout_gravity="center_vertical">
+
+    <TextView
+            android:id="@+id/balance_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/balance_item_name_size"
+            android:textColor="@color/textColorPrimary"
+            tools:text="Balance Name"/>
+
+    <TextView
+            android:id="@+id/balance_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/balance_item_amount_size"
+            tools:textColor="@color/textColorGreen"
+            tools:text="$500.00"/>
+</LinearLayout>

@@ -7,15 +7,6 @@ import com.bkromhout.balances.enums.WarnLimitsResult;
  */
 public class DataUtils {
     /**
-     * Checks to see if a string is {@code null} or empty.
-     * @param s String to check.
-     * @return True if string is {@code null} or empty, otherwise false.
-     */
-    public static boolean nullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
-
-    /**
      * Validates a pair of warning limits.
      * @param yellowLimit The yellow (first) warning limit.
      * @param redLimit The red (second) warning limit.

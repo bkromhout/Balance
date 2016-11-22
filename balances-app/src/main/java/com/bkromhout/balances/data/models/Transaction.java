@@ -25,6 +25,10 @@ public class Transaction extends RealmObject implements UIDModel {
      */
     public String name;
     /**
+     * This transaction's {@link Category}.
+     */
+    public Category category;
+    /**
      * The amount of the transaction.
      */
     public long amount;
@@ -48,12 +52,14 @@ public class Transaction extends RealmObject implements UIDModel {
 
     /**
      * Create a new {@link Transaction}.
-     * @param name Name of the transaction.
-     * @param amount Amount of the transaction.
+     * @param name      Name of the transaction.
+     * @param category  Category of the transaction.
+     * @param amount    Amount of the transaction.
      * @param timestamp Timestamp of the transaction.
      */
-    public Transaction(String name, long amount, Date timestamp) {
+    public Transaction(String name, Category category, long amount, Date timestamp) {
         this.name = name;
+        this.category = category;
         this.amount = amount;
         this.timestamp = timestamp;
         this.checkNumber = -1;

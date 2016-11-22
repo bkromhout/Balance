@@ -10,4 +10,18 @@
     <dimen name="recycler_view_padding">8dp</dimen>
     <!-- Padding for end of recycler views to avoid FAB overlap -->
     <dimen name="rv_end_padding">80dp</dimen>
+
+    <!-- List item dimens -->
+    <dimen name="balance_item_height">72dp</dimen>
+    <dimen name="balance_item_h_padding">16dp</dimen>
+    <dimen name="balance_item_name_size">16sp</dimen>
+    <dimen name="balance_item_amount_size">14sp</dimen>
+
+    <dimen name="trans_item_height">72dp</dimen>
+    <dimen name="trans_item_h_padding">16dp</dimen>
+    <dimen name="trans_item_spacing">8dp</dimen>
+    <dimen name="trans_item_name_size">16sp</dimen>
+    <dimen name="trans_item_amount_size">16sp</dimen>
+    <dimen name="trans_item_cat_size">14sp</dimen>
+    <dimen name="trans_item_date_size">14sp</dimen>
 </resources>

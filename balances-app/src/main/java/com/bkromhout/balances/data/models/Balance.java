@@ -1,5 +1,6 @@
 package com.bkromhout.balances.data.models;
 
+import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.data.DataUtils;
 import com.bkromhout.balances.data.UniqueIdFactory;
 import com.bkromhout.balances.enums.WarnLimitsResult;
@@ -53,7 +54,7 @@ public class Balance extends RealmObject implements UIDModel {
      * @param redLimit Second warning limit for the balance.
      */
     public Balance(String name, long baseBalance, long yellowLimit, long redLimit) {
-        if (DataUtils.nullOrEmpty(name))
+        if (Utils.nullOrEmpty(name))
             throw new IllegalArgumentException("Name must not be null or empty.");
         if (DataUtils.validateWarnLimits(yellowLimit, redLimit) != WarnLimitsResult.OK)
             throw new IllegalArgumentException("Invalid limits.");
