@@ -10,7 +10,7 @@ public enum WarnLimitsResult {
      */
     OK,
     /**
-     * Limits overlap (the yellow limit is greater than or equal to the red limit).
+     * Limits overlap (the yellow limit is less than or equal to the red limit).
      */
     OVERLAP,
     /**

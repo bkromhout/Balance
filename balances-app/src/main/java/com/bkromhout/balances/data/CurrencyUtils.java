@@ -125,21 +125,6 @@ public class CurrencyUtils {
     }
 
     /**
-     * This method is used solely by the google analytics e-commerce tracking methods because currency values must be
-     * sent using "micros", or millionths of currency.
-     * @param amount       The locale formatted string that represents the price of an item, gotten from the in-app
-     *                     billing helper
-     * @param defaultValue The value to return in case of errors
-     * @return A long value representing the price in micros of an item
-     */
-    public static long currencyStringToMicros(String amount, long defaultValue) {
-        Number n = currencyStringToNumber(amount, defaultValue);
-        int multiple = 1000000;
-        BigDecimal b = new BigDecimal(n.toString());
-        return b.multiply(new BigDecimal(multiple)).longValue();
-    }
-
-    /**
      * Parse the given locale-specific currency string, and return a Number that represents the amount. The Number
      * object then easily allows conversion to primitives or even BigDecimal.
      * <p/>
@@ -178,6 +163,13 @@ public class CurrencyUtils {
             // In french, the official grouping separator is a Unicode thin space...convert ASCII spaces to thin
             // spaces keeps input conversion from failing....
             if (symbols.getGroupingSeparator() == '\u00a0') amount = amount.replace(" ", "\u00a0");
+            // We commonly need to parse, but without a currency symbol, which Java dislikes and complains about. As a
+            // result, we try to detect if there is a currency symbol in the string, and if there isn't then we set the
+            // currency symbol of the DecimalFormat instance to empty string.
+            if (!amount.contains(symbols.getCurrencySymbol()))
+                symbols.setCurrencySymbol("");
+
+            ((DecimalFormat) fmt).setDecimalFormatSymbols(symbols);
             return fmt.parse(amount);
         } catch (ParseException e) {
             Timber.d(e, "Failed to parse currency: %s", amount);

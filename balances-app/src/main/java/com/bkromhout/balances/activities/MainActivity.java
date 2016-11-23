@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        realm = Realm.getDefaultInstance();
         // Init the UI.
         initUi();
     }
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             Balance newBalance = new Balance(data.getString(BalanceFields.NAME),
                     data.getLong(BalanceFields.BASE_BALANCE, 0L), data.getLong(BalanceFields.YELLOW_LIMIT, 5000L),
                     data.getLong(BalanceFields.RED_LIMIT, 2500L));
-            realm.copyToRealm(newBalance);
+            bgRealm.copyToRealm(newBalance);
         });
     }
 

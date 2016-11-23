@@ -50,7 +50,7 @@ public class TransactionAdapter extends RealmRecyclerViewAdapter<Transaction, Re
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TransactionVH(inflater.inflate(R.layout.transaction_item, parent));
+        return new TransactionVH(inflater.inflate(R.layout.transaction_item, parent, false));
     }
 
     @Override

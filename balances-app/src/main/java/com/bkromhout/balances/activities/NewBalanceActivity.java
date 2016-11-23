@@ -67,7 +67,7 @@ public class NewBalanceActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         // Check to see if we're editing, and get the UID of the Balance to load data from if we are.
-        if (getIntent().getExtras().containsKey(BalanceFields.UNIQUE_ID)) {
+        if (getIntent().hasExtra(BalanceFields.UNIQUE_ID)) {
             isEditing = true;
             editingUid = getIntent().getLongExtra(BalanceFields.UNIQUE_ID, -1);
         }

@@ -15,7 +15,7 @@ public class DataUtils {
     public static WarnLimitsResult validateWarnLimits(long yellowLimit, long redLimit) {
         if (yellowLimit < 0 || redLimit < 0)
             return WarnLimitsResult.NEGATIVE;
-        else if (yellowLimit >= redLimit)
+        else if (yellowLimit <= redLimit)
             return WarnLimitsResult.OVERLAP;
         else
             return WarnLimitsResult.OK;

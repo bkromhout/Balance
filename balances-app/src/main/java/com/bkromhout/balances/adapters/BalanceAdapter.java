@@ -49,7 +49,7 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BalanceVH(inflater.inflate(R.layout.balance_item, parent));
+        return new BalanceVH(inflater.inflate(R.layout.balance_item, parent, false));
     }
 
     @Override
