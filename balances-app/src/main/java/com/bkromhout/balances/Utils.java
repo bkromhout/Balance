@@ -4,6 +4,8 @@ import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.bkromhout.balances.data.CurrencyUtils;
 import timber.log.Timber;
@@ -67,6 +69,22 @@ public class Utils {
         textView.setTextColor(amount > yellowLimit ? Balances.getD().TEXT_COLOR_GREEN
                 : (amount > redLimit ? Balances.getD().TEXT_COLOR_YELLOW
                 : Balances.getD().TEXT_COLOR_RED));
+    }
+
+    /**
+     * Create and return a new View.OnFocusChangeListener which is meant to be applied to an EditText which is used to
+     * input currency amounts. The listener will auto-format the EditText's contents whenever it loses focus.
+     * @return A new View.OnFocusChangeListener which formats the contents of a currency EditText whenever it loses
+     * focus.
+     */
+    public static View.OnFocusChangeListener getCurrencyFormattingFocusChangeListener() {
+        return (view, hasFocus) -> {
+            EditText et = (EditText) view;
+            if (!hasFocus && et.length() != 0) {
+                String parsedAmount = CurrencyUtils.roundCurrency(et.getText().toString());
+                et.setText(parsedAmount);
+            }
+        };
     }
 
     /**

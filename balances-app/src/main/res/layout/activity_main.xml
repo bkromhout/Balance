@@ -36,24 +36,34 @@
             android:contentDescription="@string/action_new_balance"
             app:layout_anchor="@id/recycler"
             app:layout_anchorGravity="bottom|right|end"
-            app:layout_behavior="com.bkromhout.balance.ui.ScrollAwareFABBehavior"/>
+            app:layout_behavior="com.bkromhout.balances.ui.ScrollAwareFABBehavior"/>
 
-    <LinearLayout
-            android:id="@+id/balances_empty"
+    <FrameLayout
+            android:id="@+id/alt_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:gravity="center"
-            tools:visibility="visible">
+            android:gravity="center">
 
         <TextView
+                android:id="@+id/loading_balances"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:gravity="center_horizontal"
                 style="@style/TextAppearance.AppCompat.Medium"
-                android:text="@string/no_balances"/>
-    </LinearLayout>
+                android:text="@string/loading_balances"
+                android:visibility="gone"/>
+
+        <TextView
+                android:id="@+id/no_balances"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center_horizontal"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:text="@string/no_balances"
+                android:visibility="gone"/>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

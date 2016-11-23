@@ -190,7 +190,7 @@ public class CurrencyUtils {
      * @param amount       The string (e.g. 100.34) to be parsed
      * @param defaultValue The Number to return if the parsing fails.
      * @return A Number (e.g. rv.toDouble() == 100.34), or defaultValue if the string isn't understandable.
-     * @see {@link #currencyStringToNumber(String, Number, java.util.Locale) currencyStringToNumber()}
+     * @see #currencyStringToNumber(String, Number, java.util.Locale) currencyStringToNumber()
      */
     public static Number currencyStringToNumber(String amount, Number defaultValue) {
         return currencyStringToNumber(amount, defaultValue, Locale.getDefault());
@@ -271,7 +271,7 @@ public class CurrencyUtils {
      * @param enUS_FormattedString Amount string formatted using en_US
      * @return Amount string formatted using default locale WITHOUT symbols
      */
-    public static String getStringFromString(String enUS_FormattedString) {
+    public static String getStringFromEnUSString(String enUS_FormattedString) {
         final Locale en_US_Locale = new Locale("en_US");
         return numberToCurrencyString(currencyStringToNumber(enUS_FormattedString, 0, en_US_Locale), false);
     }
