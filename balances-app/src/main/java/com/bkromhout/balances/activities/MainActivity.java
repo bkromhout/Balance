@@ -5,28 +5,33 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.bkromhout.balances.C;
 import com.bkromhout.balances.R;
 import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.adapters.BalanceAdapter;
 import com.bkromhout.balances.data.models.Balance;
 import com.bkromhout.balances.data.models.BalanceFields;
+import com.bkromhout.balances.events.ActionEvent;
 import com.bkromhout.rrvl.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Main activity of the app. Shows a list of balances and provides functionality related to them.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActionMode.Callback {
     // Request codes.
     private static final int RC_CREATE_BALANCE = 1;
     private static final int RC_EDIT_BALANCE = 2;
@@ -60,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private BalanceAdapter adapter;
     /**
+     * Action mode.
+     */
+    private static ActionMode actionMode;
+    /**
      * Realm change listener which takes care of toggling view visibility when {@link #balances} changes from empty to
      * non-empty (and vice-versa).
      */
@@ -76,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
         // Init the UI.
         initUi();
+
+        if (savedInstanceState != null && savedInstanceState.getBoolean(C.IS_IN_ACTION_MODE)) {
+            adapter.restoreInstanceState(savedInstanceState);
+            startActionMode();
+        }
     }
 
     /**
@@ -104,6 +118,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save adapter state if we're in action mode.
+        if (actionMode != null) {
+            adapter.saveInstanceState(outState);
+            outState.putBoolean(C.IS_IN_ACTION_MODE, true);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Finish action mode so it doesn't leak.
+        if (actionMode != null) actionMode.finish();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         // Close adapter.
@@ -114,6 +147,57 @@ public class MainActivity extends AppCompatActivity {
         if (realm != null) {
             realm.close();
             realm = null;
+        }
+        if (actionMode != null) actionMode.finish();
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(R.menu.main_action_mode, menu);
+        adapter.setSelectionMode(true);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        Utils.forceMenuIcons(menu, getClass().getSimpleName());
+        // Only show the "Edit" item if only one item is selected. // TODO Update rrvl to notify on selection events.
+        menu.findItem(R.id.action_edit_balance).setVisible(adapter.getSelectedItemCount() <= 1);
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        adapter.setSelectionMode(false);
+        adapter.clearSelections();
+        actionMode = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // TODO Open settings activity.
+                return true;
+            case R.id.action_about:
+                // TODO Open about activity.
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit_balance:
+                // TODO Open NewBalanceActivity in edit mode.
+                return true;
+            case R.id.action_delete_balance:
+                // TODO Open confirmation dialog.
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -132,10 +216,26 @@ public class MainActivity extends AppCompatActivity {
                     saveNewBalance(data.getExtras());
                     break;
                 case RC_EDIT_BALANCE:
-                    // TODO
+                    // Persist changed data to selected balance.
+                    updateBalance(data.getExtras());
                     break;
             }
         }
+    }
+
+    /**
+     * Called to take some action.
+     * @param event {@link ActionEvent}.
+     */
+    @Subscribe
+    public void onActionEvent(ActionEvent event) {
+        switch (event.getActionId()) {
+            case R.id.action_delete_balance:
+                // TODO Delete selected balances.
+                
+                break;
+        }
+        if (actionMode != null) actionMode.finish();
     }
 
     /**
@@ -165,6 +265,14 @@ public class MainActivity extends AppCompatActivity {
             balance.yellowLimit = data.getLong(BalanceFields.YELLOW_LIMIT, 5000L);
             balance.redLimit = data.getLong(BalanceFields.RED_LIMIT, 2500L);
         });
+        if (actionMode != null) actionMode.finish();
+    }
+
+    /**
+     * Starts the action mode (if it hasn't been already).
+     */
+    private void startActionMode() {
+        if (actionMode == null) actionMode = startSupportActionMode(this);
     }
 
     /**

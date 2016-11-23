@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Balances</string>
 
+    <!-- Common Strings -->
+    <string name="cancel">Cancel</string>
+
     <!-- Misc Actions -->
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
@@ -11,6 +14,8 @@
 
     <!-- Balances (Main) Activity -->
     <string name="action_new_balance">New Balance</string>
+    <string name="action_edit_balance">Edit Balance</string>
+    <string name="action_delete_balance">Delete Balance</string>
 
     <string name="loading_balances">Loading balances…</string>
     <string name="no_balances">You haven\'t created any balances yet.</string>

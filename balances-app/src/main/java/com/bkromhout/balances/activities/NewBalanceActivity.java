@@ -64,7 +64,8 @@ public class NewBalanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_balance);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Check to see if we're editing, and get the UID of the Balance to load data from if we are.
         if (getIntent().hasExtra(BalanceFields.UNIQUE_ID)) {
