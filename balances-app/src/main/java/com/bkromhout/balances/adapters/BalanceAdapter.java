@@ -10,8 +10,12 @@ import butterknife.ButterKnife;
 import com.bkromhout.balances.R;
 import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.data.models.Balance;
+import com.bkromhout.balances.events.BalanceClickEvent;
 import com.bkromhout.rrvl.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 /**
  * Adapter class which handles binding {@link Balance}s to a RealmRecyclerView.
@@ -41,6 +45,18 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
         this.inSelectionMode = enabled;
     }
 
+    /**
+     * Get the UIDs of the selected items.
+     * @return Long array containing UIDs of selected items.
+     */
+    public Long[] getSelectedItemUids() {
+        ArrayList<Long> uids = new ArrayList<>(selectedPositions.size());
+        for (int selectedPos : selectedPositions) {
+            uids.add((Long) ids.get(selectedPos));
+        }
+        return uids.toArray(new Long[uids.size()]);
+    }
+
     @Override
     public long getItemId(int position) {
         final Balance balance = realmResults.get(position);
@@ -59,21 +75,16 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
         if (!balance.isValid()) return;
 
         // Visually distinguish selected cards during multi-select mode.
-        vh.content.setActivated(isSelected(position));
+        vh.content.setSelected(isSelected(position));
 
         // Set click handler.
-        vh.content.setOnClickListener(view -> {
-            if (inSelectionMode) {
-                toggleSelected(holder.getAdapterPosition());
-                return;
-            }
-
-            // TODO Send event to open the balance transactions list activity.
-        });
+        vh.content.setOnClickListener(view -> EventBus.getDefault().post(new BalanceClickEvent(
+                BalanceClickEvent.Type.NORMAL, balance.uniqueId, vh.getAdapterPosition(), vh.getLayoutPosition())));
 
         // Set long click handler.
         vh.content.setOnLongClickListener(view -> {
-            // TODO dispatch event.
+            EventBus.getDefault().post(new BalanceClickEvent(BalanceClickEvent.Type.LONG, balance.uniqueId,
+                    vh.getAdapterPosition(), vh.getLayoutPosition()));
             return true;
         });
 

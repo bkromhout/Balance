@@ -18,9 +18,12 @@ import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.data.CurrencyUtils;
 import com.bkromhout.balances.data.models.Balance;
 import com.bkromhout.balances.data.models.BalanceFields;
+import io.realm.Realm;
 
+/**
+ * Activity used to enter information used to create (or update) a {@link Balance}.
+ */
 public class NewBalanceActivity extends AppCompatActivity {
-
     // Views.
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -44,18 +47,9 @@ public class NewBalanceActivity extends AppCompatActivity {
     TextInputEditText etRedLimit;
 
     /**
-     * Whether we're editing an existing balance or not.
-     */
-    private boolean isEditing = false;
-    /**
      * The UID of the {@link Balance} we're editing, if we're editing one.
      */
     private long editingUid = -1;
-    /**
-     * Focus change listener applied to all currency input fields to auto-format their contents whenever they lose
-     * focus.
-     */
-    private View.OnFocusChangeListener formattingFocusChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,28 +62,40 @@ public class NewBalanceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Check to see if we're editing, and get the UID of the Balance to load data from if we are.
-        if (getIntent().hasExtra(BalanceFields.UNIQUE_ID)) {
-            isEditing = true;
+        if (getIntent().hasExtra(BalanceFields.UNIQUE_ID))
             editingUid = getIntent().getLongExtra(BalanceFields.UNIQUE_ID, -1);
-        }
+
+        initUi();
     }
 
     /**
      * Initialize the UI.
      */
     private void initUi() {
-        if (isEditing) {
-            // TODO
+        if (editingUid != -1) {
+            // We're editing an existing Balance, change the title to reflect this.
+            setTitle(R.string.action_edit_balance);
+
+            // Fill in current data.
+            try (Realm realm = Realm.getDefaultInstance()) {
+                Balance balance = realm.where(Balance.class).equalTo(BalanceFields.UNIQUE_ID, editingUid).findFirst();
+                etName.setText(balance.name);
+                etBaseAmount.setText(CurrencyUtils.longToCurrencyString(balance.baseBalance));
+                etYellowLimit.setText(CurrencyUtils.longToCurrencyString(balance.yellowLimit));
+                etRedLimit.setText(CurrencyUtils.longToCurrencyString(balance.redLimit));
+            }
             // Don't allow editing the base amount.
+            etBaseAmountLayout.setEnabled(false);
             etBaseAmount.setEnabled(false);
         } else {
+            // We're making a new Balance.
             etBaseAmount.setText(Balances.getD().ZERO_AMOUNT_NO_SYMBOL);
             etYellowLimit.setText(CurrencyUtils.getStringFromEnUSString("50.00"));
             etRedLimit.setText(CurrencyUtils.getStringFromEnUSString("25.00"));
         }
 
         // Set all focus change listeners.
-        formattingFocusChangeListener = Utils.getCurrencyFormattingFocusChangeListener();
+        View.OnFocusChangeListener formattingFocusChangeListener = Utils.getCurrencyFormattingFocusChangeListener();
         etBaseAmount.setOnFocusChangeListener(formattingFocusChangeListener);
         etYellowLimit.setOnFocusChangeListener(formattingFocusChangeListener);
         etRedLimit.setOnFocusChangeListener(formattingFocusChangeListener);
@@ -135,6 +141,8 @@ public class NewBalanceActivity extends AppCompatActivity {
         b.putLong(BalanceFields.YELLOW_LIMIT,
                 CurrencyUtils.currencyStringToLong(etYellowLimit.getText().toString(), 0));
         b.putLong(BalanceFields.RED_LIMIT, CurrencyUtils.currencyStringToLong(etRedLimit.getText().toString(), 0));
+        if (editingUid != -1)
+            b.putLong(BalanceFields.UNIQUE_ID, editingUid);
 
         // Set result and finish.
         setResult(RESULT_OK, new Intent().putExtras(b));

@@ -4,14 +4,14 @@
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/trans_item_height"
-                android:paddingRight="@dimen/trans_item_h_padding"
-                android:paddingLeft="@dimen/trans_item_h_padding"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                style="@style/ItemBase">
 
     <TextView
             android:id="@+id/trans_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/balance_item_h_padding"
             android:layout_marginEnd="@dimen/trans_item_spacing"
             android:layout_toStartOf="@+id/trans_amount"
             android:textSize="@dimen/trans_item_name_size"
@@ -22,6 +22,7 @@
             android:id="@id/trans_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/balance_item_h_padding"
             android:layout_alignParentEnd="true"
             android:textSize="@dimen/trans_item_amount_size"
             tools:textColor="@color/textColorRed"
@@ -31,6 +32,7 @@
             android:id="@+id/trans_cat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/balance_item_h_padding"
             android:layout_marginEnd="@dimen/trans_item_spacing"
             android:layout_below="@id/trans_name"
             android:layout_toStartOf="@+id/trans_timestamp"
@@ -42,6 +44,7 @@
             android:id="@id/trans_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/balance_item_h_padding"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/trans_amount"
             android:textColor="@color/grey700"

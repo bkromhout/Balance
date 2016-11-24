@@ -3,6 +3,7 @@
 
     <!-- Common Strings -->
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 
     <!-- Misc Actions -->
     <string name="action_settings">Settings</string>
@@ -17,15 +18,26 @@
     <string name="action_edit_balance">Edit Balance</string>
     <string name="action_delete_balance">Delete Balance</string>
 
-    <string name="loading_balances">Loading balances…</string>
-    <string name="no_balances">You haven\'t created any balances yet.</string>
+    <string name="loading_balances">Loading Balances…</string>
+    <string name="no_balances">You haven\'t created any Balances yet.</string>
+
+    <plurals name="title_delete_balance">
+        <item quantity="one">Delete Balance</item>
+        <item quantity="other">Delete Balances</item>
+    </plurals>
+    <plurals name="prompt_delete_balance">
+        <item quantity="one">Are you sure you want to delete the selected Balance?</item>
+        <item quantity="other">Are you sure you want to delete the selected Balances?</item>
+    </plurals>
 
     <!-- New Balance Activity -->
     <string name="action_save_balance">Save Balance</string>
+
     <string name="balance_name">Balance Name</string>
     <string name="base_amount">Base Amount</string>
     <string name="warning_limits">Warning Limits</string>
     <string name="yellow_limit">Yellow Limit</string>
     <string name="red_limit">Red Limit</string>
+
     <string name="error_yellow_limit">Must be greater than red limit</string>
 </resources>

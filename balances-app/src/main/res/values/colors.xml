@@ -26,6 +26,8 @@
     <color name="colorPrimaryDark">@color/blue700</color>
     <color name="colorAccent">@color/orangeA200</color>
 
+    <color name="colorItemSelected">@color/grey300</color>
+
     <color name="textColorGreen">@color/green500</color>
     <color name="textColorYellow">@color/amber700</color>
     <color name="textColorRed">@color/red500</color>

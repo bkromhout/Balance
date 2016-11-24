@@ -5,14 +5,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="@dimen/balance_item_height"
-              android:paddingRight="@dimen/balance_item_h_padding"
-              android:paddingLeft="@dimen/balance_item_h_padding"
-              android:gravity="center_vertical">
+              android:gravity="center_vertical"
+              style="@style/ItemBase">
 
     <TextView
             android:id="@+id/balance_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/balance_item_h_padding"
+            android:layout_marginEnd="@dimen/balance_item_h_padding"
             android:textSize="@dimen/balance_item_name_size"
             android:textColor="@color/textColorPrimary"
             tools:text="Balance Name"/>
@@ -21,6 +22,8 @@
             android:id="@+id/balance_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/balance_item_h_padding"
+            android:layout_marginEnd="@dimen/balance_item_h_padding"
             android:textSize="@dimen/balance_item_amount_size"
             tools:textColor="@color/textColorGreen"
             tools:text="$500.00"/>

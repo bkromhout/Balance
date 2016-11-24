@@ -20,10 +20,19 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat">
     </style>
 
+    <!-- RecyclerView item styles -->
+    <style name="ItemBase">
+        <item name="android:background">@drawable/item_bg_color</item>
+        <!--<item name="android:stateListAnimator">@animator/item_state_list</item>-->
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
     <!-- RealmRecyclerView styles -->
     <style name="RealmRVBase">
-        <item name="rvPaddingStart">@dimen/recycler_view_padding</item>
-        <item name="rvPaddingEnd">@dimen/recycler_view_padding</item>
+        <item name="rvPaddingStart">0dp</item>
+        <item name="rvPaddingEnd">0dp</item>
         <item name="rvPaddingBottom">@dimen/recycler_view_padding</item>
     </style>
 

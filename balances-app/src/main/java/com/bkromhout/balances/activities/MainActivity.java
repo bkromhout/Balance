@@ -22,16 +22,22 @@ import com.bkromhout.balances.adapters.BalanceAdapter;
 import com.bkromhout.balances.data.models.Balance;
 import com.bkromhout.balances.data.models.BalanceFields;
 import com.bkromhout.balances.events.ActionEvent;
+import com.bkromhout.balances.events.BalanceClickEvent;
+import com.bkromhout.balances.ui.Dialogs;
 import com.bkromhout.rrvl.RealmRecyclerView;
+import com.bkromhout.rrvl.SelectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 /**
  * Main activity of the app. Shows a list of balances and provides functionality related to them.
  */
-public class MainActivity extends AppCompatActivity implements ActionMode.Callback {
+public class MainActivity extends AppCompatActivity implements ActionMode.Callback, SelectionChangeListener {
     // Request codes.
     private static final int RC_CREATE_BALANCE = 1;
     private static final int RC_EDIT_BALANCE = 2;
@@ -101,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
         balances.addChangeListener(emptyListener);
         toggleEmptyState(balances.isLoaded(), balances.isEmpty());
         adapter = makeAdapter();
+        if (adapter != null) adapter.setSelectionChangeListener(this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -118,6 +125,12 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -131,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     @Override
     protected void onStop() {
         super.onStop();
-
+        EventBus.getDefault().unregister(this);
         // Finish action mode so it doesn't leak.
         if (actionMode != null) actionMode.finish();
     }
@@ -161,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         Utils.forceMenuIcons(menu, getClass().getSimpleName());
-        // Only show the "Edit" item if only one item is selected. // TODO Update rrvl to notify on selection events.
+        // Only show the "Edit" item if only one item is selected.
         menu.findItem(R.id.action_edit_balance).setVisible(adapter.getSelectedItemCount() <= 1);
         return true;
     }
@@ -189,12 +202,25 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        // Ignore if nothing is selected.
+        if (adapter.getSelectedItemCount() == 0) return true;
         switch (item.getItemId()) {
             case R.id.action_edit_balance:
-                // TODO Open NewBalanceActivity in edit mode.
+                List<Balance> selected = adapter.getSelectedRealmObjects();
+                if (selected.size() != 1) return true; // Ignore if we somehow have more than one selected.
+                Balance balance = selected.get(0);
+                // Start NewBalanceActivity in edit mode by passing a Balance's UID.
+                startActivityForResult(new Intent(this, NewBalanceActivity.class)
+                        .putExtra(BalanceFields.UNIQUE_ID, balance.uniqueId), RC_EDIT_BALANCE);
                 return true;
             case R.id.action_delete_balance:
-                // TODO Open confirmation dialog.
+                // Get pluralized strings.
+                String title = getResources().getQuantityString(R.plurals.title_delete_balance,
+                        adapter.getSelectedItemCount());
+                String text = getResources().getQuantityString(R.plurals.prompt_delete_balance,
+                        adapter.getSelectedItemCount());
+                // Open confirmation dialog.
+                Dialogs.simpleConfirmDialog(this, title, text, getString(R.string.delete), item.getItemId());
                 return true;
             default:
                 return false;
@@ -204,6 +230,32 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     @OnClick(R.id.fab)
     void onFabClick() {
         startActivityForResult(new Intent(this, NewBalanceActivity.class), RC_CREATE_BALANCE);
+    }
+
+    /**
+     * Called when a balance item is clicked or long-clicked.
+     * @param event {@link BalanceClickEvent}.
+     */
+    @Subscribe
+    public void onBalanceClickEvent(BalanceClickEvent event) {
+        // If in action mode, select some things.
+        if (actionMode != null) {
+            if (event.getType() == BalanceClickEvent.Type.LONG)
+                adapter.extendSelectionTo(event.getAdapterPosition());
+            else
+                adapter.toggleSelected(event.getAdapterPosition());
+            return;
+        }
+
+        switch (event.getType()) {
+            case NORMAL:
+                // TODO Open BalanceDetailsActivity (which contains fragments like TransactionListFragment).
+                break;
+            case LONG:
+                adapter.toggleSelected(event.getAdapterPosition());
+                startActionMode();
+                break;
+        }
     }
 
     @Override
@@ -231,11 +283,24 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     public void onActionEvent(ActionEvent event) {
         switch (event.getActionId()) {
             case R.id.action_delete_balance:
-                // TODO Delete selected balances.
-                
+                // Delete selected balance items.
+                realm.executeTransactionAsync(bgRealm ->
+                        bgRealm.where(Balance.class)
+                               .in(BalanceFields.UNIQUE_ID, adapter.getSelectedItemUids())
+                               .findAll()
+                               .deleteAllFromRealm());
                 break;
         }
         if (actionMode != null) actionMode.finish();
+    }
+
+    /**
+     * Called when the item selection changes so that we can update the action mode menu items if needed.
+     */
+    @Override
+    public void itemSelectionChanged() {
+        // Refresh the action mode menu.
+        if (actionMode != null) actionMode.invalidate();
     }
 
     /**

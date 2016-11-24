@@ -83,7 +83,7 @@ dependencies {
     compile 'com.wdullaer:materialdatetimepicker:2.5.0'
     annotationProcessor 'dk.ilios:realmfieldnameshelper:1.1.0'
     compile 'com.github.bkromhout:java-diff-utils:2.1.1'
-    compile('com.bkromhout:realm-recyclerview-lite:3.0.0@aar') {
+    compile('com.bkromhout:realm-recyclerview-lite:3.1.0@aar') {
         transitive = true
     }
     /* Local Tests */
