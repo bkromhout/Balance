@@ -152,17 +152,19 @@ public class CurrencyUtils {
         try {
             DecimalFormat d = (DecimalFormat) fmt;
             DecimalFormatSymbols symbols = d.getDecimalFormatSymbols();
-            if (d.getNegativePrefix().length() > 0) amount = amount.replace(d.getNegativePrefix(), "-").trim();
-            if (d.getNegativeSuffix().length() > 0) amount = amount.replace(d.getNegativeSuffix(), "").trim();
-            if (d.getPositivePrefix().length() > 0) amount = amount.replace(d.getPositivePrefix(), "").trim();
-            if (d.getPositiveSuffix().length() > 0) amount = amount.replace(d.getPositiveSuffix(), "").trim();
+            if (!d.getNegativePrefix().isEmpty()) amount = amount.replace(d.getNegativePrefix(), "-").trim();
+            if (!d.getNegativeSuffix().isEmpty()) amount = amount.replace(d.getNegativeSuffix(), "").trim();
+            if (!d.getPositivePrefix().isEmpty()) amount = amount.replace(d.getPositivePrefix(), "").trim();
+            if (!d.getPositiveSuffix().isEmpty()) amount = amount.replace(d.getPositiveSuffix(), "").trim();
             d.setPositivePrefix("");
             d.setPositiveSuffix("");
             d.setNegativePrefix("-");
             d.setNegativeSuffix("");
+
             // In french, the official grouping separator is a Unicode thin space...convert ASCII spaces to thin
             // spaces keeps input conversion from failing....
             if (symbols.getGroupingSeparator() == '\u00a0') amount = amount.replace(" ", "\u00a0");
+
             // We commonly need to parse, but without a currency symbol, which Java dislikes and complains about. As a
             // result, we try to detect if there is a currency symbol in the string, and if there isn't then we set the
             // currency symbol of the DecimalFormat instance to empty string.
@@ -264,8 +266,7 @@ public class CurrencyUtils {
      * @return Amount string formatted using default locale WITHOUT symbols
      */
     public static String getStringFromEnUSString(String enUS_FormattedString) {
-        final Locale en_US_Locale = new Locale("en_US");
-        return numberToCurrencyString(currencyStringToNumber(enUS_FormattedString, 0, en_US_Locale), false);
+        return numberToCurrencyString(currencyStringToNumber(enUS_FormattedString, 0, Locale.US), false);
     }
 
     /**
@@ -329,47 +330,55 @@ public class CurrencyUtils {
      * Use the current locale's understanding of currency to round a double to the correct number of fractional digits.
      * <b>CAUTION:</b> Currency calculations must be done in a way that is consistent with accounting practices.
      * Usually, this means rounding at the end of a sequence of operations (so that rounding errors don't accumulate).
-     * The basic rule is to round any currency amount that becomes visible to the user. So, for example:
-     * <pre>
-     * double discount = 0.0123 * amount; // 1.23% discount
-     * String userMessage = I.trf(&quot;You get a {0,currency} discount!&quot;, discount); //
-     * currency formatting will show it rounded
-     * double roundedDiscount = I.roundCurrency(discount);
-     * // now use the rounded number, since that is what they expect.
-     * double price = price - roundedDiscount;
-     * </pre>
-     * @param unroundedNum The number to round
+     * The basic rule is to round any currency amount that becomes visible to the user.
+     * @param unroundedNum The number to round.
      * @return The same value, but rounded to the correct number of significant fractional digits for the locale's
      * currency.
      */
     public static String roundCurrency(String unroundedNum) {
         DecimalFormat fmt = (DecimalFormat) NumberFormat.getCurrencyInstance();
-        // We don't wanna deal with this junk, strip it out
-        String unroundedNumber = unroundedNum.replace(fmt.getCurrency().getSymbol(), "").replace(String.valueOf(
-                fmt.getDecimalFormatSymbols().getGroupingSeparator()), "").replace(String.valueOf((char) 160),
-                "") // Be sure we get rid of NBSP's
-                                             .trim();
-        // In case the user types a '-' then decides to do something that triggers this method, otherwise we crash
+        // Clean the string first.
+        String unroundedNumber = cleanForEditText(unroundedNum, fmt);
+
+        // Ensure we don't just have a negative sign.
         if (unroundedNumber.equals("-")) return unroundedNumber;
-        // Make sure we only have one decimal separator, if there are more than one then strip all but the first one out
+
+        // Ensure we only have one decimal separator; if there are more than one then strip all but the first one out.
         char decimalSeparator = fmt.getDecimalFormatSymbols().getDecimalSeparator();
         int firstOccurrence = unroundedNumber.indexOf(decimalSeparator);
         while (unroundedNumber.lastIndexOf(decimalSeparator) != firstOccurrence) {
             int lastOccurrence = unroundedNumber.lastIndexOf(decimalSeparator);
             unroundedNumber = new StringBuilder(unroundedNumber).deleteCharAt(lastOccurrence).toString();
         }
-        if (unroundedNumber.equals(String.valueOf(decimalSeparator))) return "";
-        if (unroundedNumber.equals("")) return unroundedNumber;
-        unroundedNumber = unroundedNumber.replace(String.valueOf(fmt.getDecimalFormatSymbols().getDecimalSeparator()),
-                ".");
+
+        // Ensure that the whole string isn't just the decimal separator or empty now. Return the empty string if it is.
+        if (unroundedNumber.equals(String.valueOf(decimalSeparator)) || unroundedNumber.equals("")) return "";
+
+        // Parse as BigDecimal (Must first replace whatever the real decimal separator is with the period character so
+        // that BigDecimal can parse it).
+        BigDecimal bigDec = new BigDecimal(unroundedNumber.replace(
+                String.valueOf(fmt.getDecimalFormatSymbols().getDecimalSeparator()), ".").trim());
+        // Set the correct scale using the locale-specific number of fraction digits.
+        bigDec = bigDec.setScale(getFractionDigits(), BigDecimal.ROUND_HALF_UP);
+
+        // Return formatted string after cleaning it.
         fmt.setNegativePrefix("-");
         fmt.setNegativeSuffix("");
-        BigDecimal v_bigDec = new BigDecimal(unroundedNumber.trim());
-        v_bigDec = v_bigDec.setScale(getFractionDigits(), BigDecimal.ROUND_HALF_UP);
-        return fmt.format(v_bigDec.doubleValue()).replace(fmt.getCurrency().getSymbol(), "").replace(String.valueOf(
-                fmt.getDecimalFormatSymbols().getGroupingSeparator()), "").replace(String.valueOf((char) 160),
-                "") // Once again, get rid of these NBSP's
-                  .trim();
+        return cleanForEditText(fmt.format(bigDec), fmt);
+    }
+
+    /**
+     * Clean a string up so that it's suitable for display in an EditText (this basically means that the minimum
+     * information should be present: numbers, the decimal separator, and the sign).
+     * @param s      String to clean.
+     * @param format DecimalFormat which is a currency instance.
+     * @return Cleaned string.
+     */
+    private static String cleanForEditText(String s, DecimalFormat format) {
+        return s.replace(format.getCurrency().getSymbol(), "")
+                .replace(String.valueOf(format.getDecimalFormatSymbols().getGroupingSeparator()), "")
+                .replace(String.valueOf((char) 160), "") // Get rid of NBSP characters.
+                .trim();
     }
 
     /**
