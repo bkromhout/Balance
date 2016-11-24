@@ -284,9 +284,10 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
         switch (event.getActionId()) {
             case R.id.action_delete_balance:
                 // Delete selected balance items.
+                final Long[] uidsToDelete = adapter.getSelectedItemUids();
                 realm.executeTransactionAsync(bgRealm ->
                         bgRealm.where(Balance.class)
-                               .in(BalanceFields.UNIQUE_ID, adapter.getSelectedItemUids())
+                               .in(BalanceFields.UNIQUE_ID, uidsToDelete)
                                .findAll()
                                .deleteAllFromRealm());
                 break;
@@ -329,6 +330,8 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
             balance.name = data.getString(BalanceFields.NAME);
             balance.yellowLimit = data.getLong(BalanceFields.YELLOW_LIMIT, 5000L);
             balance.redLimit = data.getLong(BalanceFields.RED_LIMIT, 2500L);
+
+            adapter.notifyDataSetChanged();
         });
         if (actionMode != null) actionMode.finish();
     }
