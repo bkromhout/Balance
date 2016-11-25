@@ -94,9 +94,3 @@ dependencies {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
 }
-
-//android.applicationVariants.all { variant ->
-//    variant.variantData.variantConfiguration.javaCompileOptions.annotationProcessorOptions
-//        .arguments = ['eventBusIndex' : "com.bkromhout.balance.EventBusIndex"]
-//
-//}

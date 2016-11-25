@@ -7,7 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!--<item name="android:textColorPrimary">@color/textColorPrimary</item>-->
-        <!--<item name="android:textColorSecondary">@color/textColorPrimary</item>-->
+        <!--<item name="android:textColorSecondary">@color/textColorPrimaryInverse</item>-->
         <!--<item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>-->
         <!--<item name="android:textColorSecondaryInverse">@color/textColorPrimaryInverse</item>-->
 

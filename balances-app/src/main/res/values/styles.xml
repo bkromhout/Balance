@@ -4,6 +4,7 @@
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:popupTheme">@style/AppTheme.PopupOverlay</item>
         <item name="android:theme">@style/AppTheme.AppBarOverlay</item>
+        <item name="titleTextColor">@color/textColorPrimaryInverse</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

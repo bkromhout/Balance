@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Utils.fixOverflowIconColor(toolbar);
         setSupportActionBar(toolbar);
 
         realm = Realm.getDefaultInstance();

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+            android:id="@+id/nav_transactions"
+            android:icon="@drawable/ic_account_balance_wallet"
+            android:title="@string/transactions"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/nav_overview"
+            android:icon="@drawable/ic_overview"
+            android:title="@string/overview"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/nav_scheduled"
+            android:icon="@drawable/ic_hourglass_full"
+            android:title="@string/scheduled"
+            app:showAsAction="ifRoom"/>
+</menu>

@@ -1,8 +1,11 @@
 package com.bkromhout.balances;
 
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -38,6 +41,20 @@ public class Utils {
                     Timber.e(e, "onMenuOpened...unable to set icons for overflow menu");
                 }
             }
+        }
+    }
+
+    /**
+     * Fixes the color of the toolbar's overflow icon.
+     * @param toolbar Toolbar.
+     */
+    public static void fixOverflowIconColor(Toolbar toolbar) {
+        Drawable overflowIcon = toolbar.getOverflowIcon();
+        if (overflowIcon != null) {
+            overflowIcon = DrawableCompat.wrap(overflowIcon);
+            DrawableCompat.setTint(overflowIcon.mutate(),
+                    ContextCompat.getColor(Balances.get(), R.color.textColorPrimaryInverse));
+            toolbar.setOverflowIcon(overflowIcon);
         }
     }
 
