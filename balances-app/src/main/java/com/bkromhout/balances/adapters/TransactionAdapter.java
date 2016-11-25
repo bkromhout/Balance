@@ -36,7 +36,7 @@ public class TransactionAdapter extends RealmRecyclerViewAdapter<Transaction, Re
     /**
      * Set whether or not the adapter should consider itself to be in selection mode. This is necessary to determine
      * what to do when an item is tapped.
-     * @param enabled
+     * @param enabled Whether selection mode should be enabled or not.
      */
     public void setSelectionMode(boolean enabled) {
         this.inSelectionMode = enabled;
