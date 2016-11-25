@@ -15,7 +15,10 @@
     </style>
 
     <!-- AppBar -->
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar">
+        <!-- Necessary to make toolbar's overflow and back arrow icons be colored white -->
+        <item name="colorControlNormal">@color/textColorPrimaryInverse</item>
+    </style>
 
     <!-- PopupMenu -->
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat">

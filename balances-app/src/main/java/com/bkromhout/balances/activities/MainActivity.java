@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Utils.fixOverflowIconColor(toolbar);
         setSupportActionBar(toolbar);
 
         realm = Realm.getDefaultInstance();
@@ -250,7 +249,9 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
 
         switch (event.getType()) {
             case NORMAL:
-                // TODO Open BalanceDetailsActivity (which contains fragments like TransactionListFragment).
+                // Open BalanceDetailsActivity for the clicked Balance.
+                startActivity(new Intent(this, BalanceDetailsActivity.class)
+                        .putExtra(BalanceFields.UNIQUE_ID, event.getUniqueId()));
                 break;
             case LONG:
                 adapter.toggleSelected(event.getAdapterPosition());
