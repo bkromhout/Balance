@@ -11,18 +11,17 @@ import com.bkromhout.balances.R;
 import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.data.DateUtils;
 import com.bkromhout.balances.data.models.Transaction;
+import com.bkromhout.balances.events.TransactionClickEvent;
 import com.bkromhout.rrvl.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 
 /**
  * Adapter class which handles binding {@link Transaction}s to a RealmRecyclerView.
  */
 public class TransactionAdapter extends RealmRecyclerViewAdapter<Transaction, RecyclerView.ViewHolder> {
-    /**
-     * Whether or not the adapter should consider itself to be in selection mode.
-     */
-    private boolean inSelectionMode = false;
-
     /**
      * Create a new {@link TransactionAdapter}.
      * @param context      Context.
@@ -34,12 +33,15 @@ public class TransactionAdapter extends RealmRecyclerViewAdapter<Transaction, Re
     }
 
     /**
-     * Set whether or not the adapter should consider itself to be in selection mode. This is necessary to determine
-     * what to do when an item is tapped.
-     * @param enabled Whether selection mode should be enabled or not.
+     * Get the UIDs of the selected items.
+     * @return Long array containing UIDs of selected items.
      */
-    public void setSelectionMode(boolean enabled) {
-        this.inSelectionMode = enabled;
+    public Long[] getSelectedItemUids() {
+        ArrayList<Long> uids = new ArrayList<>(selectedPositions.size());
+        for (int selectedPos : selectedPositions) {
+            uids.add((Long) ids.get(selectedPos));
+        }
+        return uids.toArray(new Long[uids.size()]);
     }
 
     @Override
@@ -59,22 +61,18 @@ public class TransactionAdapter extends RealmRecyclerViewAdapter<Transaction, Re
         final Transaction transaction = realmResults.get(position);
         if (!transaction.isValid()) return;
 
-        // Visually distinguish selected cards during multi-select mode.
-        vh.content.setActivated(isSelected(position));
+        // Visually distinguish selected items during multi-select mode.
+        vh.content.setSelected(isSelected(position));
 
         // Set click handler.
-        vh.content.setOnClickListener(view -> {
-            if (inSelectionMode) {
-                toggleSelected(holder.getAdapterPosition());
-                return;
-            }
-
-            // TODO Send event to open the transaction detail activity.
-        });
+        vh.content.setOnClickListener(view -> EventBus.getDefault().post(new TransactionClickEvent(
+                TransactionClickEvent.Type.NORMAL, transaction.uniqueId, vh.getAdapterPosition(),
+                vh.getLayoutPosition())));
 
         // Set long click handler.
         vh.content.setOnLongClickListener(view -> {
-            // TODO dispatch event.
+            EventBus.getDefault().post(new TransactionClickEvent(TransactionClickEvent.Type.LONG, transaction.uniqueId,
+                    vh.getAdapterPosition(), vh.getLayoutPosition()));
             return true;
         });
 

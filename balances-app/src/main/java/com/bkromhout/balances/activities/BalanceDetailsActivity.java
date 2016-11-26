@@ -20,6 +20,7 @@ import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.data.models.Balance;
 import com.bkromhout.balances.data.models.BalanceFields;
 import com.bkromhout.balances.enums.BalanceDetailsFrag;
+import com.bkromhout.balances.fragments.TransactionsFragment;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 
@@ -103,6 +104,12 @@ public class BalanceDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.balance_details, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CURR_FRAG, currFrag.getIndex());
@@ -126,6 +133,12 @@ public class BalanceDetailsActivity extends AppCompatActivity implements
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_settings:
+                // TODO Open settings activity.
+                return true;
+            case R.id.action_about:
+                // TODO Open about activity.
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -138,7 +151,8 @@ public class BalanceDetailsActivity extends AppCompatActivity implements
         Fragment fragment = null;
         switch (currFrag) {
             case TRANSACTIONS:
-                // TODO Show TransactionsFragment.
+                // Show TransactionsFragment.
+                fragment = TransactionsFragment.newInstance(balance.uniqueId);
                 break;
             case OVERVIEW:
                 // TODO Show OverviewFragment.

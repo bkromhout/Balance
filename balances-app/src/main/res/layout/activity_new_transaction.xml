@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.bkromhout.balances.activities.NewTransactionActivity">
+
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/name"
+                        android:hint="@string/transaction_name"
+                        android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/category_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/name_layout">
+
+                <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/category"
+                        android:hint="@string/category"
+                        android:completionThreshold="1"
+                        android:selectAllOnFocus="true"
+                        android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <RadioGroup
+                    android:id="@+id/type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/category_layout"
+                    android:layout_alignStart="@+id/category_layout"
+                    android:orientation="horizontal"
+                    android:checkedButton="@+id/type_debit">
+
+                <RadioButton
+                        android:id="@id/type_debit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/debit"/>
+
+                <RadioButton
+                        android:id="@+id/type_credit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/credit"/>
+            </RadioGroup>
+
+            <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/category_layout"
+                    android:layout_alignParentEnd="true"
+                    android:paddingTop="3dp"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawablePadding="3dp"
+                    android:background="?attr/editTextBackground"
+                    android:textColor="@color/textColorPrimary"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    tools:text="12/12/12"/>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/amount_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/type">
+
+                <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/amount"
+                        android:hint="@string/amount"
+                        android:inputType="number|numberDecimal"
+                        android:digits="0123456789.,"
+                        android:selectAllOnFocus="true"
+                        android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                    android:id="@+id/other_fields_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/amount_layout"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="4dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:textStyle="bold"
+                    android:text="@string/other_fields"/>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/check_number_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/other_fields_label">
+
+                <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/check_number"
+                        android:hint="@string/check_number"
+                        android:inputType="number"
+                        android:digits="0123456789"
+                        android:selectAllOnFocus="true"
+                        android:maxLines="1"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/notes_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/check_number_layout">
+
+                <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/notes"
+                        android:hint="@string/notes"
+                        android:selectAllOnFocus="true"
+                        tools:text="This\nIs\nMULTILINE!"/>
+            </android.support.design.widget.TextInputLayout>
+        </RelativeLayout>
+    </ScrollView>
+</FrameLayout>

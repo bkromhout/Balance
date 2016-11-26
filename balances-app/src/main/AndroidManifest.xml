@@ -34,5 +34,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity"/>
         </activity>
+        <activity
+                android:name=".activities.NewTransactionActivity"
+                android:label="@string/action_new_transaction"
+                android:parentActivityName=".activities.BalanceDetailsActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".activities.BalanceDetailsActivity"/>
+        </activity>
     </application>
 </manifest>

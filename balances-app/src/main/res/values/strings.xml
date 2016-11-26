@@ -48,4 +48,34 @@
     <string name="transactions">Transactions</string>
     <string name="overview">Overview</string>
     <string name="scheduled">Scheduled</string>
+
+    <!-- Transactions Fragment -->
+    <string name="action_new_transaction">New Transaction</string>
+    <string name="action_edit_transaction">Edit Transaction</string>
+    <string name="action_delete_transaction">Delete Transaction</string>
+
+    <string name="loading_transactions">Loading Transactions…</string>
+    <string name="no_transactions">You haven\'t created any Transactions yet.</string>
+
+    <plurals name="title_delete_transaction">
+        <item quantity="one">Delete Transaction</item>
+        <item quantity="other">Delete Transactions</item>
+    </plurals>
+    <plurals name="prompt_delete_transaction">
+        <item quantity="one">Are you sure you want to delete the selected Transaction?</item>
+        <item quantity="other">Are you sure you want to delete the selected Transactions?</item>
+    </plurals>
+
+    <!-- New Transaction Activity -->
+    <string name="action_save_transaction">Save Transaction</string>
+
+    <string name="transaction_name">Transaction Name</string>
+    <string name="category">Category</string>
+    <string name="amount">Amount</string>
+    <string name="credit">Credit</string>
+    <string name="debit">Debit</string>
+    <string name="date">Date</string>
+    <string name="other_fields">Other Fields</string>
+    <string name="check_number">Check Number</string>
+    <string name="notes">Notes</string>
 </resources>

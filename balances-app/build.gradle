@@ -80,7 +80,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.afollestad.material-dialogs:core:0.9.1.0'
-    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
+    compile 'com.wdullaer:materialdatetimepicker:3.0.0'
     annotationProcessor 'dk.ilios:realmfieldnameshelper:1.1.0'
     compile 'com.github.bkromhout:java-diff-utils:2.1.1'
     compile('com.bkromhout:realm-recyclerview-lite:3.1.0@aar') {

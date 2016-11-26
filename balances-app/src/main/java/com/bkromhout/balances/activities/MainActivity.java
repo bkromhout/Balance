@@ -2,7 +2,6 @@ package com.bkromhout.balances.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -10,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,14 +43,10 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     // Views.
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.coordinator)
-    CoordinatorLayout coordinator;
     @BindView(R.id.recycler)
     RealmRecyclerView recyclerView;
     @BindView(R.id.fab)
     FloatingActionButton fabNewBalance;
-    @BindView(R.id.alt_view)
-    FrameLayout altView;
     @BindView(R.id.loading_balances)
     TextView tvLoadingResults;
     @BindView(R.id.no_balances)
@@ -119,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -167,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mode.getMenuInflater().inflate(R.menu.main_action_mode, menu);
-        adapter.setSelectionMode(true);
         return true;
     }
 
@@ -181,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        adapter.setSelectionMode(false);
         adapter.clearSelections();
         actionMode = null;
     }

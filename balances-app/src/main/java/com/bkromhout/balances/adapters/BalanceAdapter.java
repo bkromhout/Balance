@@ -22,11 +22,6 @@ import java.util.ArrayList;
  */
 public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerView.ViewHolder> {
     /**
-     * Whether or not the adapter should consider itself to be in selection mode.
-     */
-    private boolean inSelectionMode = false;
-
-    /**
      * Create a new {@link BalanceAdapter}.
      * @param context      Context.
      * @param realmResults Results of a Realm query to display.
@@ -34,15 +29,6 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
     public BalanceAdapter(Context context, RealmResults<Balance> realmResults) {
         super(context, realmResults);
         setHasStableIds(true);
-    }
-
-    /**
-     * Set whether or not the adapter should consider itself to be in selection mode. This is necessary to determine
-     * what to do when an item is tapped.
-     * @param enabled Whether selection mode should be enabled or not.
-     */
-    public void setSelectionMode(boolean enabled) {
-        this.inSelectionMode = enabled;
     }
 
     /**
@@ -74,7 +60,7 @@ public class BalanceAdapter extends RealmRecyclerViewAdapter<Balance, RecyclerVi
         final Balance balance = realmResults.get(position);
         if (!balance.isValid()) return;
 
-        // Visually distinguish selected cards during multi-select mode.
+        // Visually distinguish selected items during multi-select mode.
         vh.content.setSelected(isSelected(position));
 
         // Set click handler.

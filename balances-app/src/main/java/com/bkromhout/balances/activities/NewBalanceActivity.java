@@ -132,61 +132,72 @@ public class NewBalanceActivity extends AppCompatActivity {
      * Save a balance's details.
      */
     private void saveBalance() {
-        if (!verifyInputs()) return;
+        // Validate data which needs it, and (hopefully) obtain a Bundle containing that data.
+        Bundle data = validateInputsAndBundle();
+        if (data == null) return;
 
-        // Put result data into a bundle.
-        Bundle b = new Bundle();
-        b.putString(BalanceFields.NAME, etName.getText().toString());
-        b.putLong(BalanceFields.BASE_BALANCE, CurrencyUtils.currencyStringToLong(etBaseAmount.getText().toString(), 0));
-        b.putLong(BalanceFields.YELLOW_LIMIT,
-                CurrencyUtils.currencyStringToLong(etYellowLimit.getText().toString(), 0));
-        b.putLong(BalanceFields.RED_LIMIT, CurrencyUtils.currencyStringToLong(etRedLimit.getText().toString(), 0));
+        // In this case, all data does have validation, so we only need to potentially add the UID if we're editing.
         if (editingUid != -1)
-            b.putLong(BalanceFields.UNIQUE_ID, editingUid);
+            data.putLong(BalanceFields.UNIQUE_ID, editingUid);
 
         // Set result and finish.
-        setResult(RESULT_OK, new Intent().putExtras(b));
+        setResult(RESULT_OK, new Intent().putExtras(data));
         finish();
     }
 
     /**
-     * Verify the input values.
-     * @return True if all inputs are valid, otherwise false.
+     * Validates any inputs which need it, and returns the data for those inputs in a Bundle.
+     * @return A Bundle containing all data from validated inputs if all validations complete; null if any validations
+     * fail. Note that any data which comes from inputs which lack validation checks will not be contained in the
+     * returned Bundle.
      */
-    private boolean verifyInputs() {
+    private Bundle validateInputsAndBundle() {
         boolean valid = true;
+        Bundle data = new Bundle();
 
         // Validate name.
-        if (etName.length() == 0) {
+        String s = etName.getText().toString().trim();
+        if (s.isEmpty()) {
             etNameLayout.setError(getString(R.string.error_required));
             valid = false;
         }
+        // Add name to bundle.
+        data.putString(BalanceFields.NAME, s);
 
-        // Validate amount.
-        if (etBaseAmount.length() == 0) {
+        // Validate base amount.
+        s = etBaseAmount.getText().toString().trim();
+        if (s.isEmpty()) {
             etBaseAmountLayout.setError(getString(R.string.error_required));
             valid = false;
         }
+        // Add base amount to bundle.
+        data.putLong(BalanceFields.BASE_BALANCE, CurrencyUtils.currencyStringToLong(s, 0));
 
         // Validate both limits for entry presence first.
-        if (etYellowLimit.length() == 0) {
+        s = etYellowLimit.getText().toString().trim();
+        String s2 = etRedLimit.getText().toString().trim();
+        if (s.isEmpty()) {
             etYellowLimitLayout.setError(getString(R.string.error_required));
             valid = false;
         }
-        if (etRedLimit.length() == 0) {
+        if (s2.isEmpty()) {
             etRedLimitLayout.setError(getString(R.string.error_required));
             valid = false;
         }
         // Then validate them for correctness.
-        if (etYellowLimit.length() != 0 && etRedLimit.length() != 0) {
+        if (!s.isEmpty() && !s2.isEmpty()) {
             long yLimit = CurrencyUtils.currencyStringToLong(etYellowLimit.getText().toString(), 0);
             long rLimit = CurrencyUtils.currencyStringToLong(etRedLimit.getText().toString(), 0);
             if (yLimit <= rLimit) {
                 etYellowLimitLayout.setError(getString(R.string.error_yellow_limit));
                 valid = false;
             }
+            // Add both limits to bundle.
+            data.putLong(BalanceFields.YELLOW_LIMIT, yLimit);
+            data.putLong(BalanceFields.RED_LIMIT, rLimit);
         }
 
-        return valid;
+        // Return our data bundle if everything was valid; null otherwise.
+        return valid ? data : null;
     }
 }

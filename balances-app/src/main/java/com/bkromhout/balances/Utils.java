@@ -1,7 +1,11 @@
 package com.bkromhout.balances;
 
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.View;
@@ -39,6 +43,18 @@ public class Utils {
                 }
             }
         }
+    }
+
+    /**
+     * Get a tinted drawable.
+     * @param drawableRes The drawable resource to use.
+     * @param colorRes    The color resource to use.
+     * @return Tinted drawable.
+     */
+    public static Drawable getTintedDrawable(@DrawableRes int drawableRes, @ColorRes int colorRes) {
+        Drawable drawable = ContextCompat.getDrawable(Balances.get(), drawableRes);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(Balances.get(), colorRes));
+        return drawable;
     }
 
     /**
