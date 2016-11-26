@@ -115,7 +115,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
             actvCategory.setText(transaction.category.name);
             rgType.check(transaction.category.isCredit ? R.id.type_credit : R.id.type_debit);
             etAmount.setText(CurrencyUtils.longToCurrencyString(transaction.amount, false).replace("-", ""));
-            etCheckNumber.setText(String.valueOf(transaction.checkNumber));
+            if (transaction.checkNumber != -1) etCheckNumber.setText(String.valueOf(transaction.checkNumber));
             etNotes.setText(transaction.note);
 
             // Set our global timestamp to the Transaction's existing one, unless we set it from savedInstanceState.
