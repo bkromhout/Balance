@@ -212,6 +212,9 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
         data.putInt(TransactionFields.CHECK_NUMBER, s.isEmpty() ? -1 : Integer.parseInt(s));
         data.putString(TransactionFields.NOTE, etNotes.getText().toString().trim());
 
+        // Make sure we have a real Category created, and that its UID in the Bundle.
+        createCategoryIfNeeded(data);
+
         // If editing, also put the Transaction UID into the Bundle.
         if (editingUid != -1)
             data.putLong(TransactionFields.UNIQUE_ID, editingUid);
@@ -277,5 +280,24 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
 
         // Return our data bundle if everything was valid; null otherwise.
         return valid ? data : null;
+    }
+
+    /**
+     * Creates a {@link Category} based off of the current inputs if there isn't already a UID for one in the given
+     * Bundle.
+     * @param data Bundle to check for a {@link Category} UID.
+     */
+    private void createCategoryIfNeeded(final Bundle data) {
+        // If we already have a Category UID, we're good.
+        if (data.containsKey(TransactionFields.CATEGORY.UNIQUE_ID))
+            return;
+
+        // Otherwise, we need to create a new Category, then add its UID to the Bundle.
+        realm.executeTransaction(tRealm -> {
+            Category newCategory = tRealm.copyToRealm(new Category(actvCategory.getText().toString().trim(),
+                    rgType.getCheckedRadioButtonId() == R.id.type_credit));
+
+            data.putLong(TransactionFields.CATEGORY.UNIQUE_ID, newCategory.uniqueId);
+        });
     }
 }
