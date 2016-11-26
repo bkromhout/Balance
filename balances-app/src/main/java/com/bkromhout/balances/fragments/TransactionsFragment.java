@@ -331,8 +331,11 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
             newTransaction.checkNumber = data.getInt(TransactionFields.CHECK_NUMBER);
             newTransaction.note = data.getString(TransactionFields.NOTE);
 
-            // Add new Transaction to Realm.
-            bgRealm.copyToRealm(newTransaction);
+            // Add Transaction to the list for the currently shown Balance. This will also copy it to Realm.
+            Balance balance = bgRealm.where(Balance.class)
+                                     .equalTo(BalanceFields.UNIQUE_ID, getArguments().getLong(BalanceFields.UNIQUE_ID))
+                                     .findFirst();
+            balance.transactions.add(newTransaction);
         });
     }
 
