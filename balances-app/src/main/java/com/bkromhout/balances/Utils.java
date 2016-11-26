@@ -30,7 +30,8 @@ public class Utils {
             // Make sure all icons are tinted the correct color, including those in the overflow menu.
             for (int i = 0; i < menu.size(); i++)
                 menu.getItem(i).getIcon().setColorFilter(
-                        ContextCompat.getColor(Balances.get(), R.color.textColorPrimary), PorterDuff.Mode.SRC_IN);
+                        ContextCompat.getColor(Balances.get(), R.color.textColorPrimaryInverse),
+                        PorterDuff.Mode.SRC_IN);
             // And use a bit of reflection to ensure we show icons even in the overflow menu.
             if (menu.getClass().equals(MenuBuilder.class)) {
                 try {
