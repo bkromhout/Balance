@@ -114,7 +114,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
             etName.setText(transaction.name);
             actvCategory.setText(transaction.category.name);
             rgType.check(transaction.category.isCredit ? R.id.type_credit : R.id.type_debit);
-            etAmount.setText(CurrencyUtils.longToCurrencyString(transaction.amount));
+            etAmount.setText(CurrencyUtils.longToCurrencyString(transaction.amount, false).replace("-", ""));
             etCheckNumber.setText(String.valueOf(transaction.checkNumber));
             etNotes.setText(transaction.note);
 
