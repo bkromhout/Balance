@@ -1,6 +1,7 @@
 package com.bkromhout.balances;
 
 import android.app.Application;
+import android.preference.PreferenceManager;
 import com.bkromhout.balance.EventBusIndex;
 import com.bkromhout.balances.data.UniqueIdFactory;
 import io.realm.Realm;
@@ -25,15 +26,20 @@ public class Balances extends Application {
      */
     private static Balances INSTANCE;
     /**
-     * Static instance of {@link D}.
+     * Instance of {@link D}.
      */
-    private static D D;
+    private D D;
+    /**
+     * Instance of {@link Prefs}.
+     */
+    private Prefs prefs;
 
     @Override
     public void onCreate() {
         super.onCreate();
         INSTANCE = this;
         D = new D(this);
+        prefs = new Prefs(PreferenceManager.getDefaultSharedPreferences(this));
 
         EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
 
@@ -55,9 +61,16 @@ public class Balances extends Application {
     }
 
     /**
-     * Get static {@link D} instance.
+     * Get {@link D} instance.
      */
     public static D getD() {
-        return D;
+        return INSTANCE.D;
+    }
+
+    /**
+     * Get {@link Prefs} instance.
+     */
+    public static Prefs getPrefs() {
+        return INSTANCE.prefs;
     }
 }

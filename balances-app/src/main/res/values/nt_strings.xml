@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- This file contains non-translatable strings only!! -->
+
+    <!-- Preference keys. -->
+    <string name="key_edit_categories">edit_categories</string>
+</resources>

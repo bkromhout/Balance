@@ -44,6 +44,9 @@
                     android:value=".activities.BalanceDetailsActivity"/>
         </activity>
         <activity
+                android:name=".activities.SettingsActivity"
+                android:label="@string/title_settings"/>
+        <activity
                 android:name=".activities.CategoriesActivity"
                 android:label="@string/title_categories"/>
     </application>

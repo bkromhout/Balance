@@ -83,7 +83,6 @@
 
     <!-- Categories -->
     <string name="title_categories">Categories</string>
-    <string name="action_edit_categories">Edit Categories</string>
     <string name="action_new_category">New Category</string>
     <string name="action_edit_category">Edit Category</string>
     <string name="action_delete_category">Delete Category</string>
@@ -101,4 +100,12 @@
         <item quantity="one">Are you sure you want to delete the selected Category?</item>
         <item quantity="other">Are you sure you want to delete the selected Categories?</item>
     </plurals>
+    
+    <!-- Settings -->
+    <string name="title_settings">@string/action_settings</string>
+    <string name="pref_cat_general">General</string>
+
+
+    <string name="pref_cat_categories">Categories</string>
+    <string name="pref_edit_categories">Edit Categories</string>
 </resources>
