@@ -75,6 +75,8 @@ public class CategoriesActivity extends AppCompatActivity implements ActionMode.
         setContentView(R.layout.activity_new_balance);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initUi();
     }
@@ -149,6 +151,17 @@ public class CategoriesActivity extends AppCompatActivity implements ActionMode.
     public void onDestroyActionMode(ActionMode mode) {
         adapter.clearSelections();
         actionMode = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
