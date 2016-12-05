@@ -22,6 +22,34 @@ import org.greenrobot.eventbus.EventBus;
  */
 public class Dialogs {
     /**
+     * Shows a simple info dialog using the given {@code title}, {@code text}, and {@code posText} strings.
+     * @param ctx     Context to use.
+     * @param title   String resource to use for title.
+     * @param text    String resource to use for text.
+     * @param posText String resource to use for positive button text.
+     */
+    public static void simpleInfoDialog(final Context ctx, @StringRes final int title, @StringRes final int text,
+                                        @StringRes final int posText) {
+        simpleInfoDialog(ctx, ctx.getString(title), ctx.getString(text), ctx.getString(posText));
+    }
+
+    /**
+     * Shows a simple info dialog using the given {@code title}, {@code text}, and {@code posText} strings.
+     * @param ctx     Context to use.
+     * @param title   String to use for title.
+     * @param text    String to use for text.
+     * @param posText String to use for positive button text.
+     */
+    public static void simpleInfoDialog(final Context ctx, final String title, final String text,
+                                        final String posText) {
+        new MaterialDialog.Builder(ctx)
+                .title(title)
+                .content(text)
+                .positiveText(posText)
+                .show();
+    }
+
+    /**
      * Shows a simple confirmation dialog using the given {@code title}, {@code text}, and {@code posText} strings. Upon
      * the positive button being clicked, fires an {@link ActionEvent} using the given {@code actionId}.
      * @param ctx      Context to use.
@@ -32,7 +60,22 @@ public class Dialogs {
      */
     public static void simpleConfirmDialog(final Context ctx, @StringRes final int title, @StringRes final int text,
                                            @StringRes final int posText, @IdRes final int actionId) {
-        simpleConfirmDialog(ctx, ctx.getString(title), ctx.getString(text), ctx.getString(posText), actionId);
+        simpleConfirmDialog(ctx, ctx.getString(title), ctx.getString(text), ctx.getString(posText), actionId, null);
+    }
+
+    /**
+     * Shows a simple confirmation dialog using the given {@code title}, {@code text}, and {@code posText} strings. Upon
+     * the positive button being clicked, fires an {@link ActionEvent} using the given {@code actionId}.
+     * @param ctx      Context to use.
+     * @param title    String resource to use for title.
+     * @param text     String resource to use for text.
+     * @param posText  String resource to use for positive button text.
+     * @param actionId Action ID to send if Yes is clicked.
+     * @param data     Additional data to send in the posted {@link ActionEvent}.
+     */
+    public static void simpleConfirmDialog(final Context ctx, @StringRes final int title, @StringRes final int text,
+                                           @StringRes final int posText, @IdRes final int actionId, final Object data) {
+        simpleConfirmDialog(ctx, ctx.getString(title), ctx.getString(text), ctx.getString(posText), actionId, data);
     }
 
     /**
@@ -46,12 +89,27 @@ public class Dialogs {
      */
     public static void simpleConfirmDialog(final Context ctx, final String title, final String text,
                                            final String posText, @IdRes final int actionId) {
+        simpleConfirmDialog(ctx, title, text, posText, actionId, null);
+    }
+
+    /**
+     * Shows a simple confirmation dialog using the given {@code title}, {@code text}, and {@code posText} strings. Upon
+     * the positive button being clicked, fires an {@link ActionEvent} using the given {@code actionId}.
+     * @param ctx      Context to use.
+     * @param title    String to use for title.
+     * @param text     String to use for text.
+     * @param posText  String to use for positive button text.
+     * @param actionId Action ID to send if Yes is clicked.
+     * @param data     Additional data to send in the posted {@link ActionEvent}.
+     */
+    public static void simpleConfirmDialog(final Context ctx, final String title, final String text,
+                                           final String posText, @IdRes final int actionId, final Object data) {
         new MaterialDialog.Builder(ctx)
                 .title(title)
                 .content(text)
                 .positiveText(posText)
                 .negativeText(R.string.cancel)
-                .onPositive((dialog, which) -> EventBus.getDefault().post(new ActionEvent(actionId, null)))
+                .onPositive((dialog, which) -> EventBus.getDefault().post(new ActionEvent(actionId, data)))
                 .show();
     }
 

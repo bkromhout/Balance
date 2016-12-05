@@ -2,6 +2,7 @@ package com.bkromhout.balances.adapters;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,6 @@ import com.bkromhout.balances.events.CategoryClickEvent;
 import com.bkromhout.rrvl.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
 
 /**
  * Adapter class which handles binding {@link Category}s to a RealmRecyclerView.
@@ -33,18 +32,6 @@ public class CategoryAdapter extends RealmRecyclerViewAdapter<Category, Recycler
         super(context, realmResults);
         this.context = context;
         setHasStableIds(true);
-    }
-
-    /**
-     * Get the UIDs of the selected items.
-     * @return Long array containing UIDs of selected items.
-     */
-    public Long[] getSelectedItemUids() {
-        ArrayList<Long> uids = new ArrayList<>(selectedPositions.size());
-        for (int selectedPos : selectedPositions) {
-            uids.add((Long) ids.get(selectedPos));
-        }
-        return uids.toArray(new Long[uids.size()]);
     }
 
     @Override
@@ -69,19 +56,28 @@ public class CategoryAdapter extends RealmRecyclerViewAdapter<Category, Recycler
 
         // Set click handler.
         vh.content.setOnClickListener(view -> EventBus.getDefault().post(new CategoryClickEvent(
-                CategoryClickEvent.Type.NORMAL, category.uniqueId, vh.getAdapterPosition(), vh.getLayoutPosition())));
+                CategoryClickEvent.Type.NORMAL, category.uniqueId, vh.getAdapterPosition(), vh.getLayoutPosition(),
+                -1)));
 
         // Set long click handler.
         vh.content.setOnLongClickListener(view -> {
             EventBus.getDefault().post(new CategoryClickEvent(CategoryClickEvent.Type.LONG, category.uniqueId,
-                    vh.getAdapterPosition(), vh.getLayoutPosition()));
+                    vh.getAdapterPosition(), vh.getLayoutPosition(), -1));
             return true;
         });
 
-        // Set edit button click handler.
-        vh.btnEdit.setOnClickListener(view ->
-                EventBus.getDefault().post(new CategoryClickEvent(CategoryClickEvent.Type.EDIT, category.uniqueId,
-                        vh.getAdapterPosition(), vh.getLayoutPosition())));
+        // Set actions button click handler so that it displays a popup menu.
+        vh.btnActions.setOnClickListener(view -> {
+            PopupMenu menu = new PopupMenu(view.getContext(), view);
+            menu.getMenuInflater().inflate(R.menu.category_actions, menu.getMenu());
+
+            menu.setOnMenuItemClickListener(item -> {
+                EventBus.getDefault().post(new CategoryClickEvent(CategoryClickEvent.Type.ACTIONS,
+                        category.uniqueId, vh.getAdapterPosition(), vh.getLayoutPosition(), item.getItemId()));
+                return true;
+            });
+            menu.show();
+        });
 
         // Set data.
         vh.tvCategoryName.setText(category.name);
@@ -95,15 +91,15 @@ public class CategoryAdapter extends RealmRecyclerViewAdapter<Category, Recycler
         ViewGroup content;
         @BindView(R.id.category_name)
         TextView tvCategoryName;
-        @BindView(R.id.balance_amount)
+        @BindView(R.id.category_type)
         TextView tvCategoryType;
-        @BindView(R.id.edit_category)
-        ImageButton btnEdit;
+        @BindView(R.id.category_actions)
+        ImageButton btnActions;
 
         CategoryVH(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            btnEdit.setVisibility(View.VISIBLE);
+            btnActions.setVisibility(View.VISIBLE);
         }
     }
 }

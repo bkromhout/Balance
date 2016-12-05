@@ -8,7 +8,7 @@ public class CategoryClickEvent {
      * Type of click.
      */
     public enum Type {
-        NORMAL, LONG, EDIT
+        NORMAL, LONG, ACTIONS
     }
 
     /**
@@ -27,6 +27,10 @@ public class CategoryClickEvent {
      * The layout position of the clicked view.
      */
     private final int layoutPosition;
+    /**
+     * If {@link #type} is {@link Type#ACTIONS}, this will be the action ID, otherwise it will be -1;
+     */
+    private final int actionId;
 
     /**
      * Create a new {@link CategoryClickEvent}.
@@ -35,12 +39,14 @@ public class CategoryClickEvent {
      *                        represented by the clicked item.
      * @param adapterPosition The position of the clicked view.
      * @param layoutPosition  The layout position of the clicked view.
+     * @param actionId        The action ID, if applicable.
      */
-    public CategoryClickEvent(Type type, long uniqueId, int adapterPosition, int layoutPosition) {
+    public CategoryClickEvent(Type type, long uniqueId, int adapterPosition, int layoutPosition, int actionId) {
         this.type = type;
         this.uniqueId = uniqueId;
         this.adapterPosition = adapterPosition;
         this.layoutPosition = layoutPosition;
+        this.actionId = actionId;
     }
 
     /**
@@ -74,5 +80,13 @@ public class CategoryClickEvent {
      */
     public int getLayoutPosition() {
         return layoutPosition;
+    }
+
+    /**
+     * Get the action ID, if one of the action buttons was clicked.
+     * @return The clicked action ID, or -1;
+     */
+    public int getActionId() {
+        return actionId;
     }
 }

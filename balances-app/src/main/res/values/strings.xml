@@ -2,6 +2,7 @@
     <string name="app_name">Balances</string>
 
     <!-- Common Strings -->
+    <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
@@ -23,7 +24,7 @@
     <string name="action_delete_balance">Delete Balance</string>
 
     <string name="loading_balances">Loading Balances…</string>
-    <string name="no_balances">You haven\'t created any Balances yet.</string>
+    <string name="no_balances">You haven’t created any Balances yet.</string>
 
     <plurals name="title_delete_balance">
         <item quantity="one">Delete Balance</item>
@@ -59,7 +60,7 @@
     <string name="action_delete_transaction">Delete Transaction</string>
 
     <string name="loading_transactions">Loading Transactions…</string>
-    <string name="no_transactions">You haven\'t created any Transactions yet.</string>
+    <string name="no_transactions">You haven’t created any Transactions yet.</string>
 
     <plurals name="title_delete_transaction">
         <item quantity="one">Delete Transaction</item>
@@ -83,24 +84,25 @@
 
     <!-- Categories -->
     <string name="title_categories">Categories</string>
+    <string name="acc_category_actions">Category Actions</string>
     <string name="action_new_category">New Category</string>
     <string name="action_edit_category">Edit Category</string>
     <string name="action_delete_category">Delete Category</string>
 
     <string name="loading_categories">Loading Categories…</string>
-    <string name="no_categories">You haven\'t created any Categories yet.</string>
+    <string name="no_categories">You haven’t created any Categories yet.</string>
 
     <string name="category_name">Category Name</string>
 
-    <plurals name="title_delete_category">
-        <item quantity="one">Delete Category</item>
-        <item quantity="other">Delete Categories</item>
+    <string name="title_delete_category">Delete Category</string>
+    <string name="prompt_delete_category">Are you sure you want to delete the selected Category?</string>
+
+    <string name="title_cannot_delete_category">Can’t Delete Category</string>
+    <plurals name="info_cannot_delete_category">
+        <item quantity="one">This category can’t be deleted because it’s linked to %1$d transaction.</item>
+        <item quantity="other">This category can’t be deleted because it’s linked to %1$d transactions.</item>
     </plurals>
-    <plurals name="prompt_delete_category">
-        <item quantity="one">Are you sure you want to delete the selected Category?</item>
-        <item quantity="other">Are you sure you want to delete the selected Categories?</item>
-    </plurals>
-    
+
     <!-- Settings -->
     <string name="title_settings">@string/action_settings</string>
 
