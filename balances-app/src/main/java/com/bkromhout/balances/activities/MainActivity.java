@@ -185,7 +185,8 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // TODO Open settings activity.
+                // Open settings activity.
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_about:
                 // TODO Open about activity.

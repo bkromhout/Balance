@@ -1,5 +1,6 @@
 package com.bkromhout.balances.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -134,7 +135,8 @@ public class BalanceDetailsActivity extends AppCompatActivity implements
                 onBackPressed();
                 return true;
             case R.id.action_settings:
-                // TODO Open settings activity.
+                // Open settings activity.
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_about:
                 // TODO Open about activity.
