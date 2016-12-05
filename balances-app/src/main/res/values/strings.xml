@@ -103,8 +103,8 @@
     
     <!-- Settings -->
     <string name="title_settings">@string/action_settings</string>
-    <string name="pref_cat_general">General</string>
 
+    <string name="pref_cat_general">General</string>
 
     <string name="pref_cat_categories">Categories</string>
     <string name="pref_edit_categories">Edit Categories</string>

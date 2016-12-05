@@ -263,7 +263,7 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
 
         switch (event.getType()) {
             case NORMAL:
-                // Open TransactionDetailsActivity for the clicked Transaction.
+                // TODO Open TransactionDetailsActivity for the clicked Transaction.
 //                startActivity(new Intent(this, TransactionDetailsActivity.class)
 //                        .putExtra(TransactionFields.UNIQUE_ID, event.getUniqueId()));
                 break;

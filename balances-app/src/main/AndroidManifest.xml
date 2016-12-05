@@ -48,6 +48,11 @@
                 android:label="@string/title_settings"/>
         <activity
                 android:name=".activities.CategoriesActivity"
-                android:label="@string/title_categories"/>
+                android:label="@string/title_categories"
+                android:parentActivityName=".activities.SettingsActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".activities.SettingsActivity"/>
+        </activity>
     </application>
 </manifest>
