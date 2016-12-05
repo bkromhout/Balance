@@ -54,5 +54,8 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".activities.SettingsActivity"/>
         </activity>
+        <activity
+                android:name=".activities.AboutActivity"
+                android:label="@string/title_about_balances"/>
     </application>
 </manifest>

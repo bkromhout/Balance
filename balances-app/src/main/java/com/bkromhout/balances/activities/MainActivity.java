@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_about:
-                // TODO Open about activity.
+                // Open about activity.
+                startActivity(new Intent(this, AboutActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
