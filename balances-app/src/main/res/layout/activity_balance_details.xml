@@ -18,45 +18,39 @@
         <include layout="@layout/toolbar"/>
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-            android:id="@+id/balance_amount_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/appbar"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
-            android:textSize="18sp"
-            android:textColor="@color/textColorPrimary"
-            android:text="@string/balance_amount_label"/>
-
-    <TextView
-            android:id="@+id/balance_amount"
+    <LinearLayout
+            android:id="@+id/balance_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/balance_amount_label"
             android:layout_below="@id/appbar"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:textSize="18sp"
-            tools:text="$500.00"
-            tools:textColor="@color/textColorGreen"/>
+            android:padding="8dp"
+            android:layout_marginBottom="2dp"
+            android:background="@android:color/white"
+            android:elevation="4dp">
 
-    <View
-            android:id="@+id/balance_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/balance_amount_label"
-            android:layout_marginTop="2dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/grey700"/>
+        <TextView
+                android:id="@+id/balance_amount_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:textSize="18sp"
+                android:textColor="@color/textColorPrimary"
+                android:text="@string/balance_amount_label"/>
+
+        <TextView
+                android:id="@+id/balance_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                tools:text="$500.00"
+                tools:textColor="@color/textColorGreen"/>
+    </LinearLayout>
 
     <FrameLayout
             android:id="@+id/frag_cont"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/balance_divider"
+            android:layout_below="@+id/balance_bar"
             android:layout_above="@+id/bottom_navigation"/>
 
     <android.support.design.widget.BottomNavigationView
@@ -68,5 +62,4 @@
             app:itemIconTint="@color/bottom_nav_item_color"
             app:itemTextColor="@color/bottom_nav_item_color"
             app:menu="@menu/balance_details_bottom_nav"/>
-
 </RelativeLayout>

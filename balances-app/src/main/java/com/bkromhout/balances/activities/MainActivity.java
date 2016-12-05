@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -102,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
         toggleEmptyState(balances.isLoaded(), balances.isEmpty());
         adapter = makeAdapter();
         if (adapter != null) adapter.setSelectionChangeListener(this);
+        RecyclerView realRv = recyclerView.getRecyclerView();
+        realRv.addItemDecoration(new DividerItemDecoration(realRv.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
     }
 

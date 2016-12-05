@@ -7,6 +7,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -127,6 +129,8 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
         toggleEmptyState(transactions.isLoaded(), transactions.isEmpty());
         adapter = makeAdapter();
         if (adapter != null) adapter.setSelectionChangeListener(this);
+        RecyclerView realRv = recyclerView.getRecyclerView();
+        realRv.addItemDecoration(new DividerItemDecoration(realRv.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
     }
 
