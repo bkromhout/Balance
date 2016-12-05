@@ -366,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
             tvNoResults.setVisibility(View.GONE);
             tvLoadingResults.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
         }
     }
 }
