@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -5,7 +6,16 @@
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.TransactionsFragment">
+        tools:context=".activities.CategoriesActivity">
+
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar"/>
+    </android.support.design.widget.AppBarLayout>
 
     <com.bkromhout.rrvl.RealmRecyclerView
             android:id="@+id/recycler"
@@ -23,7 +33,7 @@
             android:src="@drawable/ic_add"
             android:tint="@color/textColorPrimaryInverse"
             android:clickable="true"
-            android:contentDescription="@string/action_new_transaction"
+            android:contentDescription="@string/action_new_balance"
             app:layout_anchor="@id/recycler"
             app:layout_anchorGravity="bottom|right|end"
             app:layout_behavior="com.bkromhout.balances.ui.ScrollAwareFABBehavior"/>
@@ -31,29 +41,30 @@
     <FrameLayout
             android:id="@+id/alt_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize">
 
         <TextView
-                android:id="@+id/loading_transactions"
+                android:id="@+id/loading_categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 style="@style/TextAppearance.AppCompat.Medium"
-                android:text="@string/loading_transactions"
+                android:text="@string/loading_categories"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
         <TextView
-                android:id="@+id/no_transactions"
+                android:id="@+id/no_categories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 style="@style/TextAppearance.AppCompat.Medium"
-                android:text="@string/no_transactions"
+                android:text="@string/no_categories"
                 android:visibility="gone"
                 tools:visibility="visible"/>
     </FrameLayout>

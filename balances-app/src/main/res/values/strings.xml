@@ -2,8 +2,12 @@
     <string name="app_name">Balances</string>
 
     <!-- Common Strings -->
+    <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+
+    <string name="credit">Credit</string>
+    <string name="debit">Debit</string>
 
     <!-- Misc Actions -->
     <string name="action_settings">Settings</string>
@@ -72,10 +76,28 @@
     <string name="transaction_name">Transaction Name</string>
     <string name="category">Category</string>
     <string name="amount">Amount</string>
-    <string name="credit">Credit</string>
-    <string name="debit">Debit</string>
     <string name="date">Date</string>
     <string name="other_fields">Other Fields</string>
     <string name="check_number">Check Number</string>
     <string name="notes">Notes</string>
+
+    <!-- Categories -->
+    <string name="title_categories">Categories</string>
+    <string name="action_edit_categories">Edit Categories</string>
+    <string name="action_edit_category">Edit Category</string>
+    <string name="action_delete_category">Delete Category</string>
+
+    <string name="loading_categories">Loading Categories…</string>
+    <string name="no_categories">You haven\'t created any Categories yet.</string>
+
+    <string name="category_name">Category Name</string>
+
+    <plurals name="title_delete_category">
+        <item quantity="one">Delete Category</item>
+        <item quantity="other">Delete Categories</item>
+    </plurals>
+    <plurals name="prompt_delete_category">
+        <item quantity="one">Are you sure you want to delete the selected Category?</item>
+        <item quantity="other">Are you sure you want to delete the selected Categories?</item>
+    </plurals>
 </resources>

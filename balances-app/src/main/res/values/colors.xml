@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Material Design Colors -->
+    <color name="blue100">#BBDEFB</color>
     <color name="blue500">#2196F3</color>
     <color name="blue700">#1976D2</color>
 
@@ -11,6 +12,7 @@
     <color name="green500">#4CAF50</color>
 
     <color name="red500">#F44336</color>
+    <color name="redA200">#FF5252</color>
 
     <color name="grey200">#EEEEEE</color>
     <color name="grey300">#E0E0E0</color>
@@ -24,7 +26,8 @@
     <!-- Prevalent app colors -->
     <color name="colorPrimary">@color/blue500</color>
     <color name="colorPrimaryDark">@color/blue700</color>
-    <color name="colorAccent">@color/orangeA200</color>
+    <color name="colorPrimaryLight">@color/blue100</color>
+    <color name="colorAccent">@color/redA200</color>
 
     <color name="colorItemSelected">@color/grey300</color>
 
@@ -32,10 +35,9 @@
     <color name="textColorYellow">@color/amber700</color>
     <color name="textColorRed">@color/red500</color>
 
-    <!-- Text color: 87% black -->
-    <color name="textColorPrimary">#DE000000</color>
-    <color name="textColorSecondary">@color/grey500</color>
+    <color name="textColorPrimary">@color/grey900</color>
+    <color name="textColorSecondary">@color/grey600</color>
     <color name="textColorDialogContent">#C7C7C7</color>
     <color name="textColorPrimaryInverse">@android:color/white</color>
-    <color name="textColorSecondaryInverse">@color/grey500</color>
+    <color name="textColorSecondaryInverse">@color/grey400</color>
 </resources>

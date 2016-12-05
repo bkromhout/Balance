@@ -28,4 +28,9 @@
     <dimen name="trans_item_amount_size">16sp</dimen>
     <dimen name="trans_item_cat_size">14sp</dimen>
     <dimen name="trans_item_date_size">14sp</dimen>
+
+    <dimen name="cat_item_height">64dp</dimen>
+    <dimen name="cat_item_h_padding">16dp</dimen>
+    <dimen name="cat_item_name_size">16sp</dimen>
+    <dimen name="cat_item_type_size">12sp</dimen>
 </resources>

@@ -27,12 +27,13 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".activities.MainActivity"/>
         </activity>
-        <activity android:name=".activities.BalanceDetailsActivity"
-                  android:label="@string/balance_details"
-                  android:parentActivityName=".activities.MainActivity">
+        <activity
+                android:name=".activities.BalanceDetailsActivity"
+                android:label="@string/balance_details"
+                android:parentActivityName=".activities.MainActivity">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".activities.MainActivity"/>
         </activity>
         <activity
                 android:name=".activities.NewTransactionActivity"
@@ -42,5 +43,8 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".activities.BalanceDetailsActivity"/>
         </activity>
+        <activity
+                android:name=".activities.CategoriesActivity"
+                android:label="@string/title_categories"/>
     </application>
 </manifest>

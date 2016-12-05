@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/category_name"
-          android:layout_width="match_parent"
-          android:layout_height="48dp"
-          android:gravity="center_vertical"
-          android:paddingTop="4dp"
-          android:paddingBottom="4dp"
-          android:paddingStart="8dp"
-          android:paddingEnd="8dp"
-          android:drawablePadding="8dp"
-          android:textSize="16sp"
-          android:textColor="@color/textColorPrimary"
-          tools:drawableStart="@drawable/ic_credit"
-          tools:text="Fake Category"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cat_item_height"
+                android:paddingStart="@dimen/cat_item_h_padding"
+                android:paddingEnd="@dimen/cat_item_h_padding"
+                android:gravity="center_vertical"
+                android:ignoreGravity="@+id/edit_category"
+                style="@style/ItemBase">
+
+    <TextView
+            android:id="@+id/category_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/edit_category"
+            android:textSize="@dimen/cat_item_name_size"
+            android:textColor="@color/textColorPrimary"
+            tools:text="Fake Category"/>
+
+    <TextView
+            android:id="@+id/category_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_name"
+            android:layout_alignStart="@id/category_name"
+            android:textAllCaps="true"
+            android:textSize="@dimen/cat_item_type_size"
+            tools:textColor="@color/textColorGreen"
+            tools:text="Credit"/>
+
+    <ImageButton
+            android:id="@id/edit_category"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_edit"
+            android:tint="@color/textColorSecondary"
+            android:backgroundTint="@android:color/transparent"
+            android:contentDescription="@string/action_edit_category"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+</RelativeLayout>
