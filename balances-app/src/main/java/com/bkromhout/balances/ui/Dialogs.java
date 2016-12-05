@@ -2,6 +2,7 @@ package com.bkromhout.balances.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
@@ -12,6 +13,7 @@ import android.widget.RadioGroup;
 import butterknife.ButterKnife;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bkromhout.balances.R;
+import com.bkromhout.balances.data.models.CategoryFields;
 import com.bkromhout.balances.events.ActionEvent;
 import org.greenrobot.eventbus.EventBus;
 
@@ -72,7 +74,7 @@ public class Dialogs {
         rgType.check(isCredit ? R.id.type_credit : R.id.type_debit);
 
         new MaterialDialog.Builder(ctx)
-                .title(R.string.action_edit_category)
+                .title(categoryUid == -1 ? R.string.action_new_category : R.string.action_edit_category)
                 .customView(view, false)
                 .positiveText(R.string.save)
                 .negativeText(R.string.cancel)
@@ -85,10 +87,17 @@ public class Dialogs {
                         return;
                     }
 
+                    // Make a data bundle.
+                    Bundle data = new Bundle();
+                    data.putString(CategoryFields.NAME, etName.getText().toString().trim());
+                    data.putBoolean(CategoryFields.IS_CREDIT, rgType.getCheckedRadioButtonId() == R.id.type_credit);
+                    if (categoryUid != -1)
+                        data.putLong(CategoryFields.UNIQUE_ID, categoryUid);
+                    // Figure out action ID.
+                    int actionId = categoryUid == -1 ? R.id.action_new_category : R.id.action_edit_category;
+
                     // Post event with data.
-                    EventBus.getDefault().post(new ActionEvent(R.id.action_edit_category,
-                            new Object[] {categoryUid, etName.getText().toString(),
-                                          rgType.getCheckedRadioButtonId() == R.id.type_credit}));
+                    EventBus.getDefault().post(new ActionEvent(actionId, data));
                     dialog.dismiss();
                 })
                 .show();

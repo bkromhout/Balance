@@ -84,6 +84,7 @@
     <!-- Categories -->
     <string name="title_categories">Categories</string>
     <string name="action_edit_categories">Edit Categories</string>
+    <string name="action_new_category">New Category</string>
     <string name="action_edit_category">Edit Category</string>
     <string name="action_delete_category">Delete Category</string>
 

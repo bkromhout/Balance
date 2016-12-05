@@ -1,6 +1,5 @@
 package com.bkromhout.balances.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +18,9 @@ import com.bkromhout.balances.C;
 import com.bkromhout.balances.R;
 import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.adapters.CategoryAdapter;
-import com.bkromhout.balances.data.models.BalanceFields;
 import com.bkromhout.balances.data.models.Category;
 import com.bkromhout.balances.data.models.CategoryFields;
-import com.bkromhout.balances.events.BalanceClickEvent;
+import com.bkromhout.balances.events.ActionEvent;
 import com.bkromhout.balances.events.CategoryClickEvent;
 import com.bkromhout.balances.ui.Dialogs;
 import com.bkromhout.rrvl.RealmRecyclerView;
@@ -90,7 +88,6 @@ public class CategoriesActivity extends AppCompatActivity implements ActionMode.
         categories.addChangeListener(emptyListener);
         toggleEmptyState(categories.isLoaded(), categories.isEmpty());
         adapter = makeAdapter();
-        if (adapter != null) adapter.setSelectionChangeListener(this);
         RecyclerView realRv = recyclerView.getRecyclerView();
         realRv.addItemDecoration(new DividerItemDecoration(realRv.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
@@ -175,15 +172,16 @@ public class CategoriesActivity extends AppCompatActivity implements ActionMode.
 
     @OnClick(R.id.fab)
     void onFabClick() {
-        // TODO Open Edit Category dialog to create new Category.
+        // Open Edit Category dialog to create new Category.
+        Dialogs.categoryDialog(this, null, false, -1);
     }
 
     /**
-     * Called when a balance item is clicked or long-clicked.
+     * Called when a category item is long-clicked or its edit button is clicked.
      * @param event {@link CategoryClickEvent}.
      */
     @Subscribe
-    public void onBalanceClickEvent(CategoryClickEvent event) {
+    public void onCategoryClickEvent(CategoryClickEvent event) {
         // If in action mode, select some things.
         if (actionMode != null) {
             if (event.getType() == CategoryClickEvent.Type.LONG)
@@ -194,16 +192,82 @@ public class CategoriesActivity extends AppCompatActivity implements ActionMode.
         }
 
         switch (event.getType()) {
-            case NORMAL:
-                // Open BalanceDetailsActivity for the clicked Balance.
-                startActivity(new Intent(this, BalanceDetailsActivity.class)
-                        .putExtra(BalanceFields.UNIQUE_ID, event.getUniqueId()));
+            case EDIT:
+                // Open Edit Category dialog.
+                Category category = categories.where()
+                                              .equalTo(CategoryFields.UNIQUE_ID, event.getUniqueId())
+                                              .findFirst();
+                Dialogs.categoryDialog(this, category.name, category.isCredit, category.uniqueId);
                 break;
             case LONG:
                 adapter.toggleSelected(event.getAdapterPosition());
                 startActionMode();
                 break;
         }
+    }
+
+    /**
+     * Called to take some action.
+     * @param event {@link ActionEvent}.
+     */
+    @Subscribe
+    public void onActionEvent(ActionEvent event) {
+        switch (event.getActionId()) {
+            case R.id.action_new_category:
+                // Save new Category.
+                saveNewCategory((Bundle) event.getData());
+                break;
+            case R.id.action_edit_category:
+                // Update Category.
+                updateCategory((Bundle) event.getData());
+                break;
+            case R.id.action_delete_category:
+                // Delete selected Category items.
+                final Long[] uidsToDelete = adapter.getSelectedItemUids();
+                realm.executeTransactionAsync(bgRealm ->
+                        bgRealm.where(Category.class)
+                               .in(CategoryFields.UNIQUE_ID, uidsToDelete)
+                               .findAll()
+                               .deleteAllFromRealm());
+                break;
+        }
+        if (actionMode != null) actionMode.finish();
+    }
+
+    /**
+     * Create and save a new {@link Category}.
+     * @param data Date to use to create the new {@link Category}.
+     */
+    private void saveNewCategory(final Bundle data) {
+        realm.executeTransactionAsync(bgRealm -> {
+            Category newCategory = new Category(data.getString(CategoryFields.NAME), data.getBoolean(
+                    CategoryFields.IS_CREDIT));
+            bgRealm.copyToRealm(newCategory);
+        });
+    }
+
+    /**
+     * Update an existing {@link Category}.
+     * @param data Data to use to find and update a {@link Category}.
+     */
+    private void updateCategory(final Bundle data) {
+        realm.executeTransaction(bgRealm -> {
+            Category category = bgRealm.where(Category.class).equalTo(CategoryFields.UNIQUE_ID, data.getLong(
+                    CategoryFields.UNIQUE_ID)).findFirst();
+            if (category == null) throw new IllegalArgumentException("Invalid Category ID");
+
+            category.name = data.getString(CategoryFields.NAME);
+            category.isCredit = data.getBoolean(CategoryFields.IS_CREDIT);
+
+            adapter.notifyDataSetChanged();
+        });
+    }
+
+    /**
+     * Starts the action mode (if it hasn't been already).
+     */
+    private void startActionMode() {
+        if (actionMode == null) actionMode = startSupportActionMode(this);
     }
 
     /**

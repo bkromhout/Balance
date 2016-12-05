@@ -67,6 +67,10 @@ public class CategoryAdapter extends RealmRecyclerViewAdapter<Category, Recycler
         // Visually distinguish selected items during multi-select mode.
         vh.content.setSelected(isSelected(position));
 
+        // Set click handler.
+        vh.content.setOnClickListener(view -> EventBus.getDefault().post(new CategoryClickEvent(
+                CategoryClickEvent.Type.NORMAL, category.uniqueId, vh.getAdapterPosition(), vh.getLayoutPosition())));
+
         // Set long click handler.
         vh.content.setOnLongClickListener(view -> {
             EventBus.getDefault().post(new CategoryClickEvent(CategoryClickEvent.Type.LONG, category.uniqueId,
