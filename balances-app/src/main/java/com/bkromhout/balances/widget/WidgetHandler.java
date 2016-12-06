@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 import com.bkromhout.balances.Balances;
@@ -167,6 +168,9 @@ public class WidgetHandler {
                 : (amount > balance.redLimit ? Balances.getD().TEXT_COLOR_YELLOW
                 : Balances.getD().TEXT_COLOR_RED));
 
+        // Make sure add Transaction button is showing.
+        views.setViewVisibility(R.id.widget_add_trans, View.VISIBLE);
+
         // Update views' click handlers.
         Intent balanceDetailsIntent = new Intent(context, BalanceDetailsActivity.class);
         balanceDetailsIntent.putExtra(BalanceFields.UNIQUE_ID, balance.uniqueId);
@@ -194,8 +198,13 @@ public class WidgetHandler {
         // Create RemoteViews.
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.balance_widget);
 
-        // The default state of the layout is mostly fine for us, we just need to hide the add button and set a click
-        // listener on the rest of the layout.
+        // Change to default text content and color.
+        views.setTextViewText(R.id.widget_balance_name, context.getString(R.string.widget_no_balance));
+        views.setTextViewText(R.id.widget_balance_amount, context.getString(R.string.widget_no_balance_sub));
+        views.setTextColor(R.id.widget_balance_amount,
+                ContextCompat.getColor(context, R.color.textColorPrimaryInverse));
+
+        // Hide add Transaction button.
         views.setViewVisibility(R.id.widget_add_trans, View.GONE);
 
         // Create intent for launching config activity.
