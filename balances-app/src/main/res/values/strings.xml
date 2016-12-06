@@ -116,4 +116,9 @@
     <string name="version_string">Version %1$s (%2$d)</string>
     <string name="acc_app_icon">Balances App Icon</string>
     <string name="acc_github_logo">GitHub Logo</string>
+
+    <!-- Widget -->
+    <string name="widget_no_balance">No Balance</string>
+    <string name="widget_no_balance_sub">Tap to choose</string>
+    <string name="acc_widget_add_trans">Add Transaction</string>
 </resources>

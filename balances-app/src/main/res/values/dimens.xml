@@ -15,7 +15,7 @@
     <!-- Padding for end of recycler views to avoid FAB overlap -->
     <dimen name="rv_end_padding">80dp</dimen>
 
-    <!-- List item dimens -->
+    <!-- List Items -->
     <dimen name="balance_item_height">72dp</dimen>
     <dimen name="balance_item_h_padding">16dp</dimen>
     <dimen name="balance_item_name_size">16sp</dimen>
@@ -33,4 +33,7 @@
     <dimen name="cat_item_h_padding">16dp</dimen>
     <dimen name="cat_item_name_size">16sp</dimen>
     <dimen name="cat_item_type_size">12sp</dimen>
+
+    <!-- Widget -->
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

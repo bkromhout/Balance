@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:ignoreGravity="@+id/widget_add_trans"
+                android:background="@drawable/widget_background">
+
+    <TextView
+            android:id="@+id/widget_balance_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/widget_margin"
+            android:layout_marginTop="@dimen/widget_margin"
+            android:layout_toStartOf="@id/widget_add_trans"
+            android:text="@string/widget_no_balance"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/textColorPrimaryInverse"/>
+
+    <TextView
+            android:id="@+id/widget_balance_amount"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/widget_margin"
+            android:layout_marginBottom="@dimen/widget_margin"
+            android:layout_below="@id/widget_balance_name"
+            android:layout_toStartOf="@id/widget_add_trans"
+            android:text="@string/widget_no_balance_sub"
+            android:textColor="@color/textColorPrimaryInverse"/>
+
+    <ImageButton
+            android:id="@id/widget_add_trans"
+            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_add"
+            android:tint="@color/textColorPrimaryInverse"
+            android:contentDescription="@string/acc_widget_add_trans"
+            android:background="@android:color/transparent"/>
+</RelativeLayout>
