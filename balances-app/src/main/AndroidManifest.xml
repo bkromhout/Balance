@@ -57,7 +57,9 @@
         <activity
                 android:name=".activities.AboutActivity"
                 android:label="@string/title_about_balances"/>
-        <activity android:name=".widget.ConfigureWidgetActivity">
+        <activity
+                android:name=".widget.ConfigureWidgetActivity"
+                android:label="@string/title_configure_widget_activity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>

@@ -118,6 +118,7 @@
     <string name="acc_github_logo">GitHub Logo</string>
 
     <!-- Widget -->
+    <string name="title_configure_widget_activity">Choose Balance</string>
     <string name="widget_name">Balance Widget</string>
     <string name="widget_no_balance">No Balance</string>
     <string name="widget_no_balance_sub">Tap to choose</string>
