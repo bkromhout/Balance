@@ -26,7 +26,7 @@ import java.util.Map;
  * as possible is contained here in order to minimize code duplication.
  */
 public class WidgetHandler {
-    private static final String PREFS_NAME = "com.bkromhout.balances.widget.BalanceWidgetProvider";
+    private static final String WIDGET_ENTRIES = "Balance_Widget_Entries";
     private static final String KEY_PREFIX = "widget_";
     private static final long INVALID_BALANCE = -1L;
 
@@ -38,7 +38,7 @@ public class WidgetHandler {
      * @param balanceUid {@link Balance} unique ID.
      */
     static void saveWidgetEntry(Context context, int widgetId, long balanceUid) {
-        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = context.getSharedPreferences(WIDGET_ENTRIES, Context.MODE_PRIVATE).edit();
         editor.putLong(KEY_PREFIX + widgetId, balanceUid).apply();
     }
 
@@ -48,7 +48,7 @@ public class WidgetHandler {
      * @param widgetId ID of the widget whose entry should be removed.
      */
     static void removeWidgetEntry(Context context, int widgetId) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor prefs = context.getSharedPreferences(WIDGET_ENTRIES, Context.MODE_PRIVATE).edit();
         prefs.remove(KEY_PREFIX + widgetId).apply();
     }
 
@@ -70,7 +70,7 @@ public class WidgetHandler {
      * @param widgetId ID of the widget whose content should be updated.
      */
     static void updateWidget(Context context, Realm realm, int widgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(WIDGET_ENTRIES, Context.MODE_PRIVATE);
         long balanceUid = prefs.getLong(KEY_PREFIX + widgetId, INVALID_BALANCE);
         Balance balance = realm.where(Balance.class).equalTo(BalanceFields.UNIQUE_ID, balanceUid).findFirst();
 
@@ -93,7 +93,7 @@ public class WidgetHandler {
      * @param balanceUid {@link Balance} unique ID.
      */
     public static void updateWidgetsForBalance(Context context, Realm realm, long balanceUid) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(WIDGET_ENTRIES, Context.MODE_PRIVATE);
         List<Integer> widgetIds = getWidgetIdsForBalance(prefs, balanceUid);
         if (widgetIds.isEmpty())
             return;
@@ -114,7 +114,7 @@ public class WidgetHandler {
      * @param balanceUid {@link Balance} unique ID.
      */
     public static void invalidateWidgetsForBalance(Context context, long balanceUid) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(WIDGET_ENTRIES, Context.MODE_PRIVATE);
         List<Integer> invalidWidgetIds = getWidgetIdsForBalance(prefs, balanceUid);
         if (invalidWidgetIds.isEmpty())
             return;
