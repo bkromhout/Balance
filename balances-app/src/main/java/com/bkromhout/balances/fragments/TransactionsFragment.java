@@ -19,7 +19,10 @@ import com.bkromhout.balances.R;
 import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.activities.NewTransactionActivity;
 import com.bkromhout.balances.adapters.TransactionAdapter;
-import com.bkromhout.balances.data.models.*;
+import com.bkromhout.balances.data.models.Balance;
+import com.bkromhout.balances.data.models.BalanceFields;
+import com.bkromhout.balances.data.models.Transaction;
+import com.bkromhout.balances.data.models.TransactionFields;
 import com.bkromhout.balances.events.ActionEvent;
 import com.bkromhout.balances.events.TransactionClickEvent;
 import com.bkromhout.balances.ui.Dialogs;
@@ -32,7 +35,6 @@ import io.realm.Sort;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -223,9 +225,10 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
                 List<Transaction> selected = adapter.getSelectedRealmObjects();
                 if (selected.size() != 1) return true; // Ignore if we somehow have more than one selected.
                 Transaction transaction = selected.get(0);
-                // Start NewTransactionActivity in edit mode by passing a Balance's UID.
+                // Start NewTransactionActivity in edit mode by passing a Transaction's UID.
                 startActivityForResult(new Intent(getActivity(), NewTransactionActivity.class)
-                        .putExtra(BalanceFields.UNIQUE_ID, transaction.uniqueId), RC_EDIT_TRANSACTION);
+                        .putExtra(BalanceFields.UNIQUE_ID, getArguments().getLong(BalanceFields.UNIQUE_ID))
+                        .putExtra(BalanceFields.TRANSACTIONS.UNIQUE_ID, transaction.uniqueId), RC_EDIT_TRANSACTION);
                 return true;
             case R.id.action_delete_transaction:
                 // Get pluralized strings.
@@ -243,7 +246,9 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
 
     @OnClick(R.id.fab)
     void onFabClick() {
-        startActivityForResult(new Intent(getActivity(), NewTransactionActivity.class), RC_CREATE_TRANSACTION);
+        startActivityForResult(new Intent(getActivity(), NewTransactionActivity.class)
+                        .putExtra(BalanceFields.UNIQUE_ID, getArguments().getLong(BalanceFields.UNIQUE_ID)),
+                RC_CREATE_TRANSACTION);
     }
 
     /**
@@ -281,11 +286,14 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
             switch (requestCode) {
                 case RC_CREATE_TRANSACTION:
                     // Save a new Balance.
-                    saveNewTransaction(data.getExtras());
+                    // saveNewTransaction(data.getExtras());
+                    // TODO Need to update?
                     break;
                 case RC_EDIT_TRANSACTION:
                     // Persist changed data to selected balance.
-                    updateTransaction(data.getExtras());
+                    adapter.notifyDataSetChanged();
+                    if (actionMode != null) actionMode.finish();
+                    //updateTransaction(data.getExtras());
                     break;
             }
         }
@@ -315,59 +323,6 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
     public void itemSelectionChanged() {
         // Refresh the action mode menu.
         if (actionMode != null) actionMode.invalidate();
-    }
-
-    /**
-     * Create and save a new {@link Transaction}.
-     * @param data Data to use to create the new {@link Transaction}.
-     */
-    private void saveNewTransaction(final Bundle data) {
-        realm.executeTransactionAsync(bgRealm -> {
-            // Find Category.
-            Category category = bgRealm.where(Category.class).equalTo(CategoryFields.UNIQUE_ID,
-                    data.getLong(TransactionFields.CATEGORY.UNIQUE_ID)).findFirst();
-
-            // Create new Transaction with required data.
-            Transaction newTransaction = new Transaction(data.getString(TransactionFields.NAME), category,
-                    data.getLong(TransactionFields.AMOUNT), new Date(data.getLong(TransactionFields.TIMESTAMP)));
-
-            // Add other data.
-            newTransaction.checkNumber = data.getInt(TransactionFields.CHECK_NUMBER);
-            newTransaction.note = data.getString(TransactionFields.NOTE);
-
-            // Add Transaction to the list for the currently shown Balance. This will also copy it to Realm.
-            Balance balance = bgRealm.where(Balance.class)
-                                     .equalTo(BalanceFields.UNIQUE_ID, getArguments().getLong(BalanceFields.UNIQUE_ID))
-                                     .findFirst();
-            balance.transactions.add(newTransaction);
-        });
-    }
-
-    /**
-     * Update an existing {@link Transaction}.
-     * @param data Data to use to find and update a {@link Transaction}.
-     */
-    private void updateTransaction(final Bundle data) {
-        realm.executeTransaction(bgRealm -> {
-            // Find Transaction.
-            Transaction transaction = bgRealm.where(Transaction.class).equalTo(TransactionFields.UNIQUE_ID,
-                    data.getLong(TransactionFields.UNIQUE_ID)).findFirst();
-
-            // Find Category.
-            Category category = bgRealm.where(Category.class).equalTo(CategoryFields.UNIQUE_ID,
-                    data.getLong(TransactionFields.CATEGORY.UNIQUE_ID)).findFirst();
-
-            // Update data.
-            transaction.name = data.getString(TransactionFields.NAME);
-            transaction.category = category;
-            transaction.amount = data.getLong(TransactionFields.AMOUNT);
-            transaction.timestamp = new Date(data.getLong(TransactionFields.TIMESTAMP));
-            transaction.checkNumber = data.getInt(TransactionFields.CHECK_NUMBER);
-            transaction.note = data.getString(TransactionFields.NOTE);
-
-            adapter.notifyDataSetChanged();
-        });
-        if (actionMode != null) actionMode.finish();
     }
 
     /**

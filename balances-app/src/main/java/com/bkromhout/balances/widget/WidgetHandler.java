@@ -174,6 +174,7 @@ public class WidgetHandler {
                 PendingIntent.getActivity(context, widgetId, balanceDetailsIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         Intent addTransIntent = new Intent(context, NewTransactionActivity.class);
+        addTransIntent.putExtra(BalanceFields.UNIQUE_ID, balance.uniqueId);
         addTransIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         views.setOnClickPendingIntent(R.id.widget_add_trans,
                 PendingIntent.getActivity(context, widgetId, addTransIntent, PendingIntent.FLAG_UPDATE_CURRENT));

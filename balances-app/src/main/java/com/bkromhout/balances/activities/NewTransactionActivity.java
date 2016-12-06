@@ -1,6 +1,5 @@
 package com.bkromhout.balances.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -20,10 +19,7 @@ import com.bkromhout.balances.Utils;
 import com.bkromhout.balances.adapters.CategoryStartsWithAdapter;
 import com.bkromhout.balances.data.CurrencyUtils;
 import com.bkromhout.balances.data.DateUtils;
-import com.bkromhout.balances.data.models.Category;
-import com.bkromhout.balances.data.models.CategoryFields;
-import com.bkromhout.balances.data.models.Transaction;
-import com.bkromhout.balances.data.models.TransactionFields;
+import com.bkromhout.balances.data.models.*;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -66,6 +62,10 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
      */
     private Realm realm;
     /**
+     * {@link Balance} which will (or does, if we're editing) own this transaction.
+     */
+    private Balance owningBalance;
+    /**
      * The UID of the {@link Transaction} we're editing, if we're editing one.
      */
     private long editingUid = -1;
@@ -87,9 +87,15 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
 
         realm = Realm.getDefaultInstance();
 
+        // Get the Balance which will (or does) own this transaction.
+        owningBalance = realm.where(Balance.class)
+                             .equalTo(BalanceFields.UNIQUE_ID, getIntent().getLongExtra(BalanceFields.UNIQUE_ID, -1))
+                             .findFirst();
+        if (owningBalance == null) finish();
+
         // Check to see if we're editing, and get the UID of the Transaction to load data from if we are.
-        if (getIntent().hasExtra(TransactionFields.UNIQUE_ID))
-            editingUid = getIntent().getLongExtra(TransactionFields.UNIQUE_ID, -1);
+        if (getIntent().hasExtra(BalanceFields.TRANSACTIONS.UNIQUE_ID))
+            editingUid = getIntent().getLongExtra(BalanceFields.TRANSACTIONS.UNIQUE_ID, -1);
 
         // Restore the previously set timestamp.
         if (savedInstanceState != null && savedInstanceState.containsKey(TIME_IN_MILLIS)) {
@@ -176,7 +182,7 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
                 onBackPressed();
                 return true;
             case R.id.action_save_transaction:
-                saveTransaction();
+                persistTransaction();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -199,40 +205,26 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
     }
 
     /**
-     * Save a transaction's details.
+     * Save or update a transaction's details, as long as user inputs are valid.
      */
-    private void saveTransaction() {
-        // Validate data which needs it, and (hopefully) obtain a Bundle containing that data.
-        Bundle data = validateInputsAndBundle();
-        if (data == null) return;
+    private void persistTransaction() {
+        // Validate data which needs it. If any aren't valid, stop now.
+        if (!validateInputs()) return;
 
-        // Put other data into the Bundle.
-        data.putLong(TransactionFields.TIMESTAMP, timestamp.getTimeInMillis());
-        String s = etCheckNumber.getText().toString().trim();
-        data.putInt(TransactionFields.CHECK_NUMBER, s.isEmpty() ? -1 : Integer.parseInt(s));
-        data.putString(TransactionFields.NOTE, etNotes.getText().toString().trim());
-
-        // Make sure we have a real Category created, and that its UID in the Bundle.
-        createCategoryIfNeeded(data);
-
-        // If editing, also put the Transaction UID into the Bundle.
-        if (editingUid != -1)
-            data.putLong(TransactionFields.UNIQUE_ID, editingUid);
+        // Everything was valid, so either save a new Transaction, or update an existing one.
+        saveOrUpdateTransaction();
 
         // Set result and finish.
-        setResult(RESULT_OK, new Intent().putExtras(data));
+        setResult(RESULT_OK);
         finish();
     }
 
     /**
-     * Validates any inputs which need it, and returns the data for those inputs in a Bundle.
-     * @return A Bundle containing all data from validated inputs if all validations complete; null if any validations
-     * fail. Note that any data which comes from inputs which lack validation checks will not be contained in the
-     * returned Bundle.
+     * Validates all inputs which need it, and returns the aggregate result.
+     * @return True if everything was valid, false if anything was invalid.
      */
-    private Bundle validateInputsAndBundle() {
+    private boolean validateInputs() {
         boolean valid = true;
-        Bundle data = new Bundle();
 
         // Validate name.
         String s = etName.getText().toString().trim();
@@ -240,8 +232,6 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
             etNameLayout.setError(getString(R.string.error_required));
             valid = false;
         }
-        // Add name to bundle.
-        data.putString(TransactionFields.NAME, s);
 
         // Validate category.
         s = actvCategory.getText().toString().trim();
@@ -249,16 +239,6 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
         if (s.isEmpty()) {
             etCategoryLayout.setError(getString(R.string.error_required));
             valid = false;
-        } else {
-            // Try to find existing category.
-            Category existingCategory = realm.where(Category.class)
-                                             .equalTo(CategoryFields.NAME, s)
-                                             .equalTo(CategoryFields.IS_CREDIT, isCredit)
-                                             .findFirst();
-            // If one exists, add its ID to the bundle, but use the field name through TransactionFields.
-            if (existingCategory != null)
-                data.putLong(TransactionFields.CATEGORY.UNIQUE_ID, existingCategory.uniqueId);
-            // If one doesn't exist, we'll create it after validation.
         }
 
         // Validate amount.
@@ -273,31 +253,68 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
             etAmountLayout.setError(getString(R.string.error_invalid_amount));
             valid = false;
         }
-        // If this is a debit, we need to multiply the amount by -1.
-        if (!isCredit) l *= -1L;
-        // Add amount to bundle.
-        data.putLong(TransactionFields.AMOUNT, l);
 
-        // Return our data bundle if everything was valid; null otherwise.
-        return valid ? data : null;
+        return valid;
     }
 
     /**
-     * Creates a {@link Category} based off of the current inputs if there isn't already a UID for one in the given
-     * Bundle.
-     * @param data Bundle to check for a {@link Category} UID.
+     * Persist our data to either an existing or new {@link Transaction}. If we have to create a new {@link
+     * Transaction}, it will be added to {@link #owningBalance}.
      */
-    private void createCategoryIfNeeded(final Bundle data) {
-        // If we already have a Category UID, we're good.
-        if (data.containsKey(TransactionFields.CATEGORY.UNIQUE_ID))
-            return;
+    private void saveOrUpdateTransaction() {
+        // Prepare required data.
+        String name = etName.getText().toString().trim();
+        Category category = getOrMakeCategory();
+        long amount = CurrencyUtils.currencyStringToLong(etAmount.getText().toString().trim(), 0);
+        if (!category.isCredit) amount *= -1L;
 
-        // Otherwise, we need to create a new Category, then add its UID to the Bundle.
-        realm.executeTransaction(tRealm -> {
-            Category newCategory = tRealm.copyToRealm(new Category(actvCategory.getText().toString().trim(),
-                    rgType.getCheckedRadioButtonId() == R.id.type_credit));
+        realm.beginTransaction();
+        // Try to get an existing transaction. If it ends up being null, we'll create a new one.
+        Transaction transaction = realm.where(Transaction.class)
+                                       .equalTo(TransactionFields.UNIQUE_ID, editingUid)
+                                       .findFirst();
+        if (transaction == null) {
+            // We're creating; make using required data, copy to Realm, then add to owning Balance.
+            transaction = realm.copyToRealm(new Transaction(name, category, amount, timestamp.getTime()));
+            owningBalance.transactions.add(transaction);
+        } else {
+            // We're editing; update required data.
+            transaction.name = name;
+            transaction.category = category;
+            transaction.amount = amount;
+            transaction.timestamp = timestamp.getTime();
+        }
 
-            data.putLong(TransactionFields.CATEGORY.UNIQUE_ID, newCategory.uniqueId);
-        });
+        // Update optional data.
+        String s = etCheckNumber.getText().toString().trim();
+        transaction.checkNumber = s.isEmpty() ? -1 : Integer.parseInt(s);
+        transaction.note = etNotes.getText().toString().trim();
+
+        // Persist changes.
+        realm.commitTransaction();
+    }
+
+    /**
+     * Tries to get an existing {@link Category} based on the current category string and transaction type. If
+     * successful, returns that, otherwise creates a new {@link Category} using that information and returns it.
+     * @return {@link Category} for this transaction.
+     */
+    private Category getOrMakeCategory() {
+        String categoryName = actvCategory.getText().toString().trim();
+        boolean isCredit = rgType.getCheckedRadioButtonId() == R.id.type_credit;
+
+        // Try to find an existing category.
+        Category category = realm.where(Category.class)
+                                 .equalTo(CategoryFields.NAME, categoryName)
+                                 .equalTo(CategoryFields.IS_CREDIT, isCredit)
+                                 .findFirst();
+        // If we couldn't find one, we'll create one instead.
+        if (category == null) {
+            realm.beginTransaction();
+            category = realm.copyToRealm(new Category(categoryName, isCredit));
+            realm.commitTransaction();
+        }
+
+        return category;
     }
 }
