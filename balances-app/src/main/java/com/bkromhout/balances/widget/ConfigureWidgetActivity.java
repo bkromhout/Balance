@@ -69,8 +69,6 @@ public class ConfigureWidgetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_configure_widget);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Find the widget id from the intent.
         if (getIntent().hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID))
