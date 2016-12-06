@@ -1,5 +1,7 @@
 package com.bkromhout.balances;
 
+import com.facebook.stetho.Stetho;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 import timber.log.Timber;
 
 /**
@@ -11,5 +13,11 @@ public class BalancesDebug extends Balances {
     public void onCreate() {
         Timber.plant(new Timber.DebugTree());
         super.onCreate();
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                      .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                      .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).withMetaTables().build())
+                      .build());
     }
 }

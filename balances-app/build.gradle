@@ -95,6 +95,10 @@ dependencies {
         transitive = true
     }
 
+    /* Debug */
+    debugCompile 'com.facebook.stetho:stetho:1.4.1'
+    debugCompile 'com.uphyca:stetho_realm:2.0.0'
+
     /* Local Tests */
     testCompile 'junit:junit:4.12'
 
