@@ -237,7 +237,6 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
 
         // Validate category.
         s = actvCategory.getText().toString().trim();
-        boolean isCredit = rgType.getCheckedRadioButtonId() == R.id.type_credit;
         if (s.isEmpty()) {
             etCategoryLayout.setError(getString(R.string.error_required));
             valid = false;

@@ -47,6 +47,10 @@ public class CategoryStartsWithAdapter extends FilterableRealmBaseAdapter<Catego
             convertView = inflater.inflate(R.layout.category_item, parent, false);
         }
 
+        // Fixes stealing the click from the AutoCompleteTextView.
+        convertView.setClickable(false);
+        convertView.setFocusable(false);
+
         TextView tvCategoryName = (TextView) convertView.findViewById(R.id.category_name);
         TextView tvCategoryType = (TextView) convertView.findViewById(R.id.category_type);
 
