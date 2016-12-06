@@ -4,9 +4,11 @@ import android.app.Application;
 import android.preference.PreferenceManager;
 import com.bkromhout.balance.EventBusIndex;
 import com.bkromhout.balances.data.UniqueIdFactory;
+import com.bkromhout.balances.events.UpdateWidgetsEvent;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Custom Application class.
@@ -51,6 +53,23 @@ public class Balances extends Application {
         try (Realm realm = Realm.getDefaultInstance()) {
             UniqueIdFactory.getInstance().initializeDefault(realm);
         }
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * Called when we wish to potentially update widgets.
+     * @param event {@link UpdateWidgetsEvent}.
+     */
+    @Subscribe
+    public void onUpdateWidgetsEvent(UpdateWidgetsEvent event) {
+
     }
 
     /**

@@ -42,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class TransactionsFragment extends Fragment implements ActionMode.Callback, SelectionChangeListener {
     // Request codes.
-    private static final int RC_CREATE_TRANSACTION = 3;
+    public static final int RC_CREATE_TRANSACTION = 3;
     private static final int RC_EDIT_TRANSACTION = 4;
 
     // Views.
