@@ -31,9 +31,10 @@
 
     <ImageButton
             android:id="@id/widget_add_trans"
-            android:layout_height="match_parent"
+            android:layout_height="48dp"
             android:layout_width="48dp"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:src="@drawable/ic_add"
             android:tint="@color/textColorPrimaryInverse"
             android:contentDescription="@string/acc_widget_add_trans"
