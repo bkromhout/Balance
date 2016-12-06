@@ -20,9 +20,11 @@ import com.bkromhout.balances.adapters.CategoryStartsWithAdapter;
 import com.bkromhout.balances.data.CurrencyUtils;
 import com.bkromhout.balances.data.DateUtils;
 import com.bkromhout.balances.data.models.*;
+import com.bkromhout.balances.events.UpdateWidgetsEvent;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
@@ -292,6 +294,8 @@ public class NewTransactionActivity extends AppCompatActivity implements DatePic
 
         // Persist changes.
         realm.commitTransaction();
+        // Trigger widget updates.
+        EventBus.getDefault().post(new UpdateWidgetsEvent(owningBalance.uniqueId, false));
     }
 
     /**

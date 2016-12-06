@@ -23,6 +23,7 @@ import com.bkromhout.balances.data.models.Balance;
 import com.bkromhout.balances.data.models.BalanceFields;
 import com.bkromhout.balances.events.ActionEvent;
 import com.bkromhout.balances.events.BalanceClickEvent;
+import com.bkromhout.balances.events.UpdateWidgetsEvent;
 import com.bkromhout.balances.ui.Dialogs;
 import com.bkromhout.rrvl.RealmRecyclerView;
 import com.bkromhout.rrvl.SelectionChangeListener;
@@ -284,11 +285,16 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
             case R.id.action_delete_balance:
                 // Delete selected balance items.
                 final Long[] uidsToDelete = adapter.getSelectedItemUids();
-                realm.executeTransactionAsync(bgRealm ->
-                        bgRealm.where(Balance.class)
-                               .in(BalanceFields.UNIQUE_ID, uidsToDelete)
-                               .findAll()
-                               .deleteAllFromRealm());
+                realm.executeTransactionAsync(
+                        bgRealm -> bgRealm.where(Balance.class)
+                                          .in(BalanceFields.UNIQUE_ID, uidsToDelete)
+                                          .findAll()
+                                          .deleteAllFromRealm(),
+                        () -> {
+                            // Once finished, trigger widget updates for all deleted UIDs.
+                            for (long uid : uidsToDelete)
+                                EventBus.getDefault().post(new UpdateWidgetsEvent(uid, true));
+                        });
                 break;
         }
         if (actionMode != null) actionMode.finish();
@@ -321,8 +327,8 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
      * @param data Data to use to find and update a {@link Balance}.
      */
     private void updateBalance(final Bundle data) {
-        realm.executeTransaction(bgRealm -> {
-            Balance balance = bgRealm.where(Balance.class).equalTo(BalanceFields.UNIQUE_ID,
+        realm.executeTransaction(tRealm -> {
+            Balance balance = tRealm.where(Balance.class).equalTo(BalanceFields.UNIQUE_ID,
                     data.getLong(BalanceFields.UNIQUE_ID)).findFirst();
             if (balance == null) throw new IllegalArgumentException("Invalid Balance ID");
 
@@ -331,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements ActionMode.Callba
             balance.redLimit = data.getLong(BalanceFields.RED_LIMIT, 2500L);
 
             adapter.notifyDataSetChanged();
+            EventBus.getDefault().post(new UpdateWidgetsEvent(balance.uniqueId, false));
         });
         if (actionMode != null) actionMode.finish();
     }

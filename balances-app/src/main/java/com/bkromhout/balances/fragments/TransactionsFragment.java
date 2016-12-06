@@ -25,6 +25,7 @@ import com.bkromhout.balances.data.models.Transaction;
 import com.bkromhout.balances.data.models.TransactionFields;
 import com.bkromhout.balances.events.ActionEvent;
 import com.bkromhout.balances.events.TransactionClickEvent;
+import com.bkromhout.balances.events.UpdateWidgetsEvent;
 import com.bkromhout.balances.ui.Dialogs;
 import com.bkromhout.rrvl.RealmRecyclerView;
 import com.bkromhout.rrvl.SelectionChangeListener;
@@ -285,15 +286,11 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case RC_CREATE_TRANSACTION:
-                    // Save a new Balance.
-                    // saveNewTransaction(data.getExtras());
-                    // TODO Need to update?
                     break;
                 case RC_EDIT_TRANSACTION:
                     // Persist changed data to selected balance.
                     adapter.notifyDataSetChanged();
                     if (actionMode != null) actionMode.finish();
-                    //updateTransaction(data.getExtras());
                     break;
             }
         }
@@ -309,11 +306,13 @@ public class TransactionsFragment extends Fragment implements ActionMode.Callbac
             case R.id.action_delete_transaction:
                 // Delete selected transaction items.
                 final Long[] uidsToDelete = adapter.getSelectedItemUids();
-                realm.executeTransactionAsync(bgRealm ->
-                        bgRealm.where(Transaction.class)
-                               .in(TransactionFields.UNIQUE_ID, uidsToDelete)
-                               .findAll()
-                               .deleteAllFromRealm());
+                realm.executeTransactionAsync(
+                        bgRealm -> bgRealm.where(Transaction.class)
+                                          .in(TransactionFields.UNIQUE_ID, uidsToDelete)
+                                          .findAll()
+                                          .deleteAllFromRealm(),
+                        () -> EventBus.getDefault().post(
+                                new UpdateWidgetsEvent(getArguments().getLong(BalanceFields.UNIQUE_ID), false)));
                 break;
         }
         if (actionMode != null) actionMode.finish();

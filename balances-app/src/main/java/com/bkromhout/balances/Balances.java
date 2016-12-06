@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import com.bkromhout.balance.EventBusIndex;
 import com.bkromhout.balances.data.UniqueIdFactory;
 import com.bkromhout.balances.events.UpdateWidgetsEvent;
+import com.bkromhout.balances.widget.WidgetHandler;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import org.greenrobot.eventbus.EventBus;
@@ -69,7 +70,12 @@ public class Balances extends Application {
      */
     @Subscribe
     public void onUpdateWidgetsEvent(UpdateWidgetsEvent event) {
-
+        if (event.isDeleted())
+            WidgetHandler.invalidateWidgetsForBalance(this, event.getBalanceUid());
+        else
+            try (Realm realm = Realm.getDefaultInstance()) {
+                WidgetHandler.updateWidgetsForBalance(this, realm, event.getBalanceUid());
+            }
     }
 
     /**
